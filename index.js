@@ -1,9 +1,13 @@
-const express = require("express");
-const schedule = require('node-schedule');
-const app = express();
-
-const { Pool } = require('pg');
 require('dotenv').config();
+const schedule = require('node-schedule');
+const { Pool } = require('pg');
+const { WebClient } = require('@slack/web-api');
+const web = new WebClient(process.env.SLACK_BOT_TOKEN);
+const EXPECTED_VOCAB_BATCH_COUNT = 3;
+
+schedule.scheduleJob('30 07 * * *', function(){
+	sendDailyDutchVocabToSlack();
+});
 
 const pool = new Pool({
     host: 'localhost',
@@ -15,31 +19,56 @@ const pool = new Pool({
     connectionTimeoutMillis: 2000,
 });
 
-app.use(express.static('public'))
-
-app.get('/', function(request, response){
-    response.send('hello world');
-});
-
-app.listen(8000);
-
-schedule.scheduleJob('*/10 * * * * *', function(){
-    console.log('Every half minute');
-
-    getVocabEntries();
-});
-
-function getVocabEntries() {
+function sendDailyDutchVocabToSlack() {
     pool.connect((err, client, release) => {
         if(err) {
             return console.error('Error acquiring client', err.stack)
         }
-        client.query('SELECT dutch, english, notes, pronunciationLink, seen, mastered FROM vocabulary', (err, result) => {
+        client.query('SELECT dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1', [EXPECTED_VOCAB_BATCH_COUNT], (err, result) => {
             release();
             if(err) {
                 return console.error('Error executing query', err.stack);
-            }
-            console.log(result.rows);
+            } else {
+				postSlackMessage(result.rows);
+			}
         });
     });
+}
+
+function postSlackMessage(data) {
+    (async () => {
+        const result = await web.chat.postMessage({
+            blocks: buildDutchBlockStr(data),
+            channel: process.env.SLACK_CHANNEL_CONVERSATION_ID,
+			text: 'Your daily Dutch vocab has arrived!'
+        });
+    })();
+}
+
+function buildDutchBlockStr(data) {
+	const blockStr = [
+		{
+			"type" : "header",
+			"text": {
+				"type": "plain_text",
+				"emoji" : false,
+				"text" : "Words for " + new Date().toLocaleString('en-US', { dateStyle: 'long' })
+			}
+		}
+	];
+	
+	for(let entry in data) {
+		blockStr.push({
+			"type" : "section",
+			"fields" : [{
+				"type": "mrkdwn",
+				"text" : "*Dutch:*\n"+data[entry].dutch+" <"+data[entry].pronunciationlink+"|(Pronunciation)>"
+			},
+			{
+				"type": "mrkdwn",
+				"text": "*English:*\n"+data[entry].english
+			}]
+		});
+	}
+    return JSON.stringify(blockStr);
 }
