@@ -10,39 +10,58 @@ schedule.scheduleJob('30 07 * * *', function(){
 });
 
 const pool = new Pool({
-    host: 'localhost',
-    user: process.env.POSTGRES_USERNAME,
-    password: process.env.POSTGRES_PASSWORD,
-    database: 'vocabdb',
-    max: 20,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+	host: 'localhost',
+	user: process.env.POSTGRES_USERNAME,
+	password: process.env.POSTGRES_PASSWORD,
+	database: 'vocabdb',
+	max: 20,
+	idleTimeoutMillis: 30000,
+	connectionTimeoutMillis: 2000,
 });
 
 function sendDailyDutchVocabToSlack() {
-    pool.connect((err, client, release) => {
-        if(err) {
-            return console.error('Error acquiring client', err.stack)
-        }
-        client.query('SELECT dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1', [EXPECTED_VOCAB_BATCH_COUNT], (err, result) => {
-            release();
-            if(err) {
-                return console.error('Error executing query', err.stack);
-            } else {
+	pool.connect((err, client, release) => {
+		if(err) {
+			return console.error('Error acquiring client', err.stack)
+		}
+		client.query('SELECT id, dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1', [EXPECTED_VOCAB_BATCH_COUNT], (err, result) => {
+			release();
+			if(err) {
+				return console.error('Error executing query', err.stack);
+			} else {
 				postSlackMessage(result.rows);
+				updateVocabRecordsAsSeen(result.rows);
 			}
-        });
-    });
+		});
+	});
+}
+
+function updateVocabRecordsAsSeen(data) {
+	const vocabIds = [];
+	for(let entry in data) {
+		vocabIds.push(data[entry].id);
+	}
+	pool.connect((err, client, release) => {
+		if(err) {
+			return console.error('Error acquiring client', err.stack)
+		}
+		client.query('UPDATE vocabulary SET seen = TRUE WHERE id = ANY($1)', [vocabIds], (err, result) => {
+			release();
+			if(err) {
+				return console.error('Error executing query', err.stack);
+			}
+		});
+	});
 }
 
 function postSlackMessage(data) {
-    (async () => {
-        const result = await web.chat.postMessage({
-            blocks: buildDutchBlockStr(data),
-            channel: process.env.SLACK_CHANNEL_CONVERSATION_ID,
+	(async () => {
+		const result = await web.chat.postMessage({
+			blocks: buildDutchBlockStr(data),
+			channel: process.env.SLACK_CHANNEL_CONVERSATION_ID,
 			text: 'Your daily Dutch vocab has arrived!'
-        });
-    })();
+		});
+	})();
 }
 
 function buildDutchBlockStr(data) {
@@ -70,5 +89,5 @@ function buildDutchBlockStr(data) {
 			}]
 		});
 	}
-    return JSON.stringify(blockStr);
+	return JSON.stringify(blockStr);
 }
