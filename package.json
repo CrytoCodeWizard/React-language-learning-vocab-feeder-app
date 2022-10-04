@@ -1,0 +1,27 @@
+{
+  "name": "vocab-feeder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JdeGuise/vocab-feeder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JdeGuise/vocab-feeder/issues"
+  },
+  "homepage": "https://github.com/JdeGuise/vocab-feeder#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "pg": "^8.8.0"
+  }
+}
