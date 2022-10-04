@@ -24,13 +24,32 @@ function sendDailyDutchVocabToSlack() {
         if(err) {
             return console.error('Error acquiring client', err.stack)
         }
-        client.query('SELECT dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1', [EXPECTED_VOCAB_BATCH_COUNT], (err, result) => {
-            release();
+        client.query('SELECT id, dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1', [EXPECTED_VOCAB_BATCH_COUNT], (err, result) => {
+			release();
             if(err) {
                 return console.error('Error executing query', err.stack);
             } else {
 				postSlackMessage(result.rows);
+				updateVocabRecordsAsSeen(result.rows);
 			}
+        });
+    });
+}
+
+function updateVocabRecordsAsSeen(data) {
+	const vocabIds = [];
+	for(let entry in data) {
+		vocabIds.push(data[entry].id);
+	}
+    pool.connect((err, client, release) => {
+        if(err) {
+            return console.error('Error acquiring client', err.stack)
+        }
+        client.query('UPDATE vocabulary SET seen = TRUE WHERE id = ANY($1)', [vocabIds], (err, result) => {
+			release();
+            if(err) {
+                return console.error('Error executing query', err.stack);
+            }
         });
     });
 }
