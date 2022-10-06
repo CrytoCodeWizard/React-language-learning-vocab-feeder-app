@@ -6,7 +6,8 @@ const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 const EXPECTED_VOCAB_BATCH_COUNT = 3;
 
 schedule.scheduleJob('30 07 * * *', function(){
-	sendDailyDutchVocabToSlack();
+	console.log('running');
+	// sendDailyDutchVocabToSlack();
 });
 
 const pool = new Pool({
@@ -18,6 +19,7 @@ const pool = new Pool({
 	idleTimeoutMillis: 30000,
 	connectionTimeoutMillis: 2000,
 });
+resetVocabRecordsToUnseen();
 
 function sendDailyDutchVocabToSlack() {
 	pool.connect((err, client, release) => {
@@ -50,6 +52,21 @@ function updateVocabRecordsAsSeen(data) {
 			if(err) {
 				return console.error('Error executing query', err.stack);
 			}
+		});
+	});
+}
+
+function resetVocabRecordsToUnseen() {
+	pool.connect((err, client, release) => {
+		if(err) {
+			return console.error('Error acquiring client', err.stack)
+		}
+		client.query('UPDATE vocabulary SET seen = FALSE', (err, result) => {
+			release();
+			if(err) {
+				return console.error('Error executing query', err.stack);
+			}
+			console.log('done!');
 		});
 	});
 }
