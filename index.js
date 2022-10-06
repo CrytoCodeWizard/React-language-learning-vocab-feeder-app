@@ -6,8 +6,7 @@ const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 const EXPECTED_VOCAB_BATCH_COUNT = 3;
 
 schedule.scheduleJob('30 07 * * *', function(){
-	console.log('running');
-	// sendDailyDutchVocabToSlack();
+	sendDailyDutchVocabToSlack();
 });
 
 const pool = new Pool({
@@ -19,7 +18,6 @@ const pool = new Pool({
 	idleTimeoutMillis: 30000,
 	connectionTimeoutMillis: 2000,
 });
-resetVocabRecordsToUnseen();
 
 function sendDailyDutchVocabToSlack() {
 	pool.connect((err, client, release) => {
