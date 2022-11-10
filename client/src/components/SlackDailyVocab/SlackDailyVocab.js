@@ -12,7 +12,7 @@ class SlackDailyVocab extends React.Component {
 	}
 
 	componentDidMount() {
-		fetch("/api")
+		fetch("/getSlackInfo")
 			.then((res) => res.json())
 			.then((data) => {
 				this.setState({data: data})

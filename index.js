@@ -117,11 +117,16 @@ function buildDutchBlockStr(data) {
 	return JSON.stringify(blockStr);
 }
 
-app.get("/api", (req, res) => {
+app.get("/getSlackInfo", (req, res) => {
+	res.json({ sendDailySlackBtnLabel: SEND_DAILY_SLACK_BTN_LABEL });
+});
+
+app.get("/getReviewCategories", (req, res) => {
 	res.json({ sendDailySlackBtnLabel: SEND_DAILY_SLACK_BTN_LABEL });
 });
 
 app.post("/sendSlack", async (req, res) => {
+	resetVocabRecordsToUnseen(); // TODO: REMOVE AFTER ACTIVE DEV IS DONE
 	let body = "";
 	req.on('data', chunk => {
 		body += chunk.toString();

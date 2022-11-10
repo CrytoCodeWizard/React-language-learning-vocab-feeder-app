@@ -6,9 +6,14 @@ class ReviewVocab extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {data: ''};
+	}
 
-		this.handleRecordCountChange = this.handleRecordCountChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
+	componentDidMount() {
+		fetch("/getReviewCategories")
+			.then((res) => res.json())
+			.then((data) => {
+				this.setState({data: data})
+			});
 	}
 
 	render() {
