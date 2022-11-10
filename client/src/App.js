@@ -24,14 +24,10 @@ class App extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault();
-
-		console.log(this.state);
 		this.sendSlack(this.state.recordCount);
 	}
 
 	sendSlack(recordCount) {
-		console.log('You clicked me!');
-		console.log(recordCount);
 		fetch('/sendSlack', {
 			method: 'POST',
 			body: JSON.stringify({
