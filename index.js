@@ -123,13 +123,13 @@ app.get("/api", (req, res) => {
 
 app.post("/sendSlack", async (req, res) => {
 	let body = "";
-    req.on('data', chunk => {
-        body += chunk.toString();
-    });
-    req.on('end', () => {
-        res.end('ok');
+	req.on('data', chunk => {
+		body += chunk.toString();
+	});
+	req.on('end', () => {
+		res.end('ok');
 		sendDailyDutchVocabToSlack(JSON.parse(body).recordCount);
-    });
+	});
 });
 
 app.listen(PORT, () => {
