@@ -1,5 +1,10 @@
 import React from "react";
 import "../App.css";
+import {
+    useLocation,
+    useNavigate,
+    useParams,
+} from "react-router-dom";
 
 class SlackDailyVocab extends React.Component {
 	constructor(props) {
@@ -43,18 +48,32 @@ class SlackDailyVocab extends React.Component {
 
 	render() {
 		return (
-			<div className="Ap">
-				<header className="App-header">
-					<form onSubmit={this.handleSubmit}>
-						<label>
-							<input type="number" min="1" max="25" placeholder="# of Records to Send" name="recordsToSend" onChange={this.handleRecordCountChange} required/>
-						</label>
-						<input type="submit" value={!this.state.data ? "Loading..." : this.state.data.sendDailySlackBtnLabel} />
-					</form>
-				</header>
+			<div className="SlackApp">
+                <form onSubmit={this.handleSubmit}>
+                    <label>
+                        <input type="number" min="1" max="25" placeholder="# of Records to Send" name="recordsToSend" onChange={this.handleRecordCountChange} required/>
+                    </label>
+                    <input type="submit" value={!this.state.data ? "Loading..." : this.state.data.sendDailySlackBtnLabel} />
+                </form>
 			</div>
 		);
 	}
 }
 
-export default SlackDailyVocab;
+function withRouter(Component) {
+    function ComponentWithRouterProp(props) {
+        let location = useLocation();
+        let navigate = useNavigate();
+        let params = useParams();
+        return (
+            <Component
+                {...props}
+                router={{ location, navigate, params }}
+            />
+        );
+    }
+  
+    return ComponentWithRouterProp;
+}
+
+export default withRouter(SlackDailyVocab);
