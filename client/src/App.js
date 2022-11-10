@@ -1,8 +1,9 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 
 import "./App.css";
-import SlackDailyVocab from "./components/SlackDailyVocab";
+import SlackDailyVocab from "./components/SlackDailyVocab/SlackDailyVocab";
+import ReviewVocab from "./components/ReviewVocab/ReviewVocab";
 
 class App extends React.Component {
 	constructor(props) {
@@ -13,12 +14,22 @@ class App extends React.Component {
 	render() {
 		return (
 			<div className="App">
-				<header className="App-header">
-					<h1>De Nederlandse App</h1>
-				</header>
 				<BrowserRouter>
+					<header className="App-header">
+						<div>
+							<span>De Nederlandse App</span>
+							<nav>
+								<ul>
+									<li><Link to="/" className="navAnchor">Home</Link></li>
+									<li><Link to="/slack" className="navAnchor">Slack App</Link></li>
+									<li><Link to="/review" className="navAnchor">Flash Cards</Link></li>
+								</ul>
+							</nav>
+						</div>
+					</header>
 					<Routes>
 						<Route exact path="/slack" element={<SlackDailyVocab/>}/>
+						<Route exact path="/review" element={<ReviewVocab/>}/>
 					</Routes>
 				</BrowserRouter>
 			</div>
