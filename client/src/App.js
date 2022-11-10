@@ -28,6 +28,7 @@ class App extends React.Component {
 						</div>
 					</header>
 					<Routes>
+						<Route exact path="/" />
 						<Route exact path="/slack" element={<SlackDailyVocab/>}/>
 						<Route exact path="/review" element={<ReviewVocab/>}/>
 					</Routes>
