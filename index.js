@@ -121,8 +121,25 @@ app.get("/getSlackInfo", (req, res) => {
 	res.json({ sendDailySlackBtnLabel: SEND_DAILY_SLACK_BTN_LABEL });
 });
 
-app.get("/getReviewCategories", (req, res) => {
-	res.json({ sendDailySlackBtnLabel: SEND_DAILY_SLACK_BTN_LABEL });
+app.get("/getReviewCategories", async (req, res) => {
+	await pool.connect(async (err, client, release) => {
+		if(err) {
+			return console.error('Error acquiring client', err.stack)
+		}
+		client.query("SELECT DISTINCT on (set_name) set_name FROM vocabulary WHERE set_name != ''", async (err, result) => {
+			release();
+			if(err) {
+				return console.error('Error executing query', err.stack);
+			} else {
+				let setNames = [];
+				for(let row in result.rows) {
+					setNames.push(result.rows[row].set_name);
+				}
+
+				res.send(setNames);
+			}
+		});
+	});
 });
 
 app.post("/sendSlack", async (req, res) => {
