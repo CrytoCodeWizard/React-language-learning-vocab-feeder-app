@@ -154,6 +154,30 @@ app.post("/sendSlack", async (req, res) => {
 	});
 });
 
+app.post("/getVocabForCategory", async (req, res) => {
+	let body = "";
+	req.on('data', chunk => {
+		body += chunk.toString();
+	});
+	req.on('end', async () => {
+
+		await pool.connect(async (err, client, release) => {
+			if(err) {
+				return console.error('Error acquiring client', err.stack)
+			}
+			client.query("SELECT id, english, dutch, pronunciationLink FROM vocabulary WHERE set_name = $1", [JSON.parse(body).category], async (err, result) => {
+				release();
+				if(err) {
+					return console.error('Error executing query', err.stack);
+				} else {
+					console.log(result.rows);
+					res.send(result.rows);
+				}
+			});
+		});
+	});
+});
+
 app.listen(PORT, () => {
 	console.log(`Server listening on ${PORT}`);
 });
