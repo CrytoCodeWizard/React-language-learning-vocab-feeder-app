@@ -47,7 +47,7 @@ class App extends React.Component {
 				<header className="App-header">
 					<form onSubmit={this.handleSubmit}>
 						<label>
-							<input type="number" placeholder="# of Records to Send" name="recordsToSend" onChange={this.handleRecordCountChange}/>
+							<input type="number" min="1" max="50" placeholder="# of Records to Send" name="recordsToSend" onChange={this.handleRecordCountChange}/>
 						</label>
 						<input type="submit" value={!this.state.data ? "Loading..." : this.state.data.sendDailySlackBtnLabel} />
 					</form>
