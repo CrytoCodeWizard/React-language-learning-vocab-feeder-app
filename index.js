@@ -2,29 +2,35 @@ require('dotenv').config();
 const schedule = require('node-schedule');
 const { Pool } = require('pg');
 const { WebClient } = require('@slack/web-api');
+
+const express = require("express");
+const PORT = process.env.NODE_PORT || 3001;
+const app = express();
+
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
-const EXPECTED_VOCAB_BATCH_COUNT = 3;
+const DEFAULT_VOCAB_BATCH_COUNT = 3;
+const SEND_DAILY_SLACK_BTN_LABEL = 'Send Daily Dutch Vocab';
 
 schedule.scheduleJob('30 07 * * *', function(){
-	sendDailyDutchVocabToSlack();
+	sendDailyDutchVocabToSlack(DEFAULT_VOCAB_BATCH_COUNT);
 });
 
 const pool = new Pool({
-	host: 'localhost',
+	host: process.env.POSTGRES_HOST,
 	user: process.env.POSTGRES_USERNAME,
 	password: process.env.POSTGRES_PASSWORD,
-	database: 'vocabdb',
+	database: process.env.POSTGRES_DATABASE_NAME,
 	max: 20,
 	idleTimeoutMillis: 30000,
 	connectionTimeoutMillis: 2000,
 });
 
-function sendDailyDutchVocabToSlack() {
+const getVocabularyRecords = async function(recordCount) {
 	pool.connect((err, client, release) => {
 		if(err) {
 			return console.error('Error acquiring client', err.stack)
 		}
-		client.query('SELECT id, dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1', [EXPECTED_VOCAB_BATCH_COUNT], (err, result) => {
+		client.query('SELECT id, dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1', [recordCount], (err, result) => {
 			release();
 			if(err) {
 				return console.error('Error executing query', err.stack);
@@ -36,7 +42,11 @@ function sendDailyDutchVocabToSlack() {
 	});
 }
 
-function updateVocabRecordsAsSeen(data) {
+const sendDailyDutchVocabToSlack = async function(recordCount) {
+	await getVocabularyRecords(recordCount);
+}
+
+const updateVocabRecordsAsSeen = async function(data) {
 	const vocabIds = [];
 	for(let entry in data) {
 		vocabIds.push(data[entry].id);
@@ -106,3 +116,22 @@ function buildDutchBlockStr(data) {
 	}
 	return JSON.stringify(blockStr);
 }
+
+app.get("/api", (req, res) => {
+	res.json({ sendDailySlackBtnLabel: SEND_DAILY_SLACK_BTN_LABEL });
+});
+
+app.post("/sendSlack", async (req, res) => {
+	let body = "";
+    req.on('data', chunk => {
+        body += chunk.toString();
+    });
+    req.on('end', () => {
+        res.end('ok');
+		sendDailyDutchVocabToSlack(JSON.parse(body).recordCount);
+    });
+});
+
+app.listen(PORT, () => {
+	console.log(`Server listening on ${PORT}`);
+});
