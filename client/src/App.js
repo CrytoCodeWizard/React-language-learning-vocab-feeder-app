@@ -1,57 +1,38 @@
 import React from "react";
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+
 import "./App.css";
+import SlackDailyVocab from "./components/SlackDailyVocab/SlackDailyVocab";
+import ReviewVocab from "./components/ReviewVocab/ReviewVocab";
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {data: ''};
-
-		this.handleRecordCountChange = this.handleRecordCountChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
-	}
-
-	componentDidMount() {
-		fetch("/api")
-			.then((res) => res.json())
-			.then((data) => {
-				this.setState({data: data})
-			});
-	}
-
-	handleRecordCountChange(event) {
-		this.setState({recordCount: event.target.value});
-	}
-
-	handleSubmit(event) {
-		event.preventDefault();
-		this.sendSlack(this.state.recordCount);
-	}
-
-	sendSlack(recordCount) {
-		fetch('/sendSlack', {
-			method: 'POST',
-			body: JSON.stringify({
-				recordCount: recordCount
-			}),
-			headers: {
-				'Content-type': 'application/json; charset=UTF-8',
-			},
-		}).then((res) => {
-			console.log(res);
-		});
 	}
 
 	render() {
 		return (
 			<div className="App">
-				<header className="App-header">
-					<form onSubmit={this.handleSubmit}>
-						<label>
-							<input type="number" placeholder="# of Records to Send" name="recordsToSend" onChange={this.handleRecordCountChange}/>
-						</label>
-						<input type="submit" value={!this.state.data ? "Loading..." : this.state.data.sendDailySlackBtnLabel} />
-					</form>
-				</header>
+				<BrowserRouter>
+					<header className="App-header">
+						<div>
+							<span>De Nederlandse App</span>
+							<nav>
+								<ul>
+									<li><Link to="/" className="navAnchor">Home</Link></li>
+									<li><Link to="/slack" className="navAnchor">Slack App</Link></li>
+									<li><Link to="/review" className="navAnchor">Flash Cards</Link></li>
+								</ul>
+							</nav>
+						</div>
+					</header>
+					<Routes>
+						<Route exact path="/" />
+						<Route exact path="/slack" element={<SlackDailyVocab/>}/>
+						<Route exact path="/review" element={<ReviewVocab/>}/>
+					</Routes>
+				</BrowserRouter>
 			</div>
 		);
 	}

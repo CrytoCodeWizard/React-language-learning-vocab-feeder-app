@@ -117,11 +117,33 @@ function buildDutchBlockStr(data) {
 	return JSON.stringify(blockStr);
 }
 
-app.get("/api", (req, res) => {
+app.get("/getSlackInfo", (req, res) => {
 	res.json({ sendDailySlackBtnLabel: SEND_DAILY_SLACK_BTN_LABEL });
 });
 
+app.get("/getReviewCategories", async (req, res) => {
+	await pool.connect(async (err, client, release) => {
+		if(err) {
+			return console.error('Error acquiring client', err.stack)
+		}
+		client.query("SELECT DISTINCT on (set_name) set_name FROM vocabulary WHERE set_name != ''", async (err, result) => {
+			release();
+			if(err) {
+				return console.error('Error executing query', err.stack);
+			} else {
+				let setNames = [];
+				for(let row in result.rows) {
+					setNames.push(result.rows[row].set_name);
+				}
+
+				res.send(setNames);
+			}
+		});
+	});
+});
+
 app.post("/sendSlack", async (req, res) => {
+	resetVocabRecordsToUnseen(); // TODO: REMOVE AFTER ACTIVE DEV IS DONE
 	let body = "";
 	req.on('data', chunk => {
 		body += chunk.toString();
@@ -129,6 +151,30 @@ app.post("/sendSlack", async (req, res) => {
 	req.on('end', () => {
 		res.end('ok');
 		sendDailyDutchVocabToSlack(JSON.parse(body).recordCount);
+	});
+});
+
+app.post("/getVocabForCategory", async (req, res) => {
+	let body = "";
+	req.on('data', chunk => {
+		body += chunk.toString();
+	});
+	req.on('end', async () => {
+
+		await pool.connect(async (err, client, release) => {
+			if(err) {
+				return console.error('Error acquiring client', err.stack)
+			}
+			client.query("SELECT id, english, dutch, pronunciationLink FROM vocabulary WHERE set_name = $1", [JSON.parse(body).category], async (err, result) => {
+				release();
+				if(err) {
+					return console.error('Error executing query', err.stack);
+				} else {
+					console.log(result.rows);
+					res.send(result.rows);
+				}
+			});
+		});
 	});
 });
 
