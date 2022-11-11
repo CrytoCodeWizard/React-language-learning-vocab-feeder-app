@@ -1,35 +1,16 @@
 import React from "react";
 import "./../../App.css";
-import { withRouter } from './../../utils.js';
 
-class VocabCard extends React.Component {
-	constructor(props) {
-		super(props);
-        const { record } = this.props;
-        console.log(record);
-
-		this.state = {record: '', flipped: false};
-		// this.handleLinkClick = this.handleLinkClick.bind(this);
-	}
-
-	// handleLinkClick(event) {
-	// 	this.retrieveVocabForCategory(event.target.innerText);
-	// }
-
-	// async componentDidMount() {
-	// 	await this.getReviewCategories();
-	// }
-
-	render() {
-        let label = this.state.flipped ? this.state.record.english : this.state.record.dutch;
-        if(label) {
-            return(
-                <div>
-                    {label}
-                </div>
-            );
-        }
-	}
+const VocabCard = (props) => {
+    return (
+        <div>
+            <ul>
+                <li key={props.card.id}>{props.card.dutch}</li>
+                <button onClick={props.GetPrevCard}>Prev</button>
+                <button onClick={props.GetNextCard}>Next</button>
+            </ul>
+        </div>
+    );
 }
 
-export default withRouter(VocabCard);
+export default VocabCard;

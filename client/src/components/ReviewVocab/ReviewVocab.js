@@ -1,18 +1,19 @@
 import React, { useState, useEffect, useCallback } from "react";
-import "./../../App.css";
+import { useSearchParams  } from 'react-router-dom';
+
 import { shuffleArray } from './../../utils.js';
-import VocabCard from './../../components/VocabCard/VocabCard';
-import { Link, useSearchParams  } from 'react-router-dom';
+import "./../../App.css";
+import CategoryList from "../CategoryList/CategoryList";
+import VocabCard from "../VocabCard/VocabCard";
 
 const ReviewVocab = (props) => {
 	const [searchParams] = useSearchParams();
-	const setName = searchParams.get("set_name");
-
     const [categories, setCategories] = useState([]);
 	const [records, setRecords] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
 
 	const GetRecordsForCategory = useCallback((e) => {
+		setIsLoaded(false);
 		fetch('/getVocabForCategory', {
 			method: 'POST',
 			body: JSON.stringify({
@@ -25,8 +26,22 @@ const ReviewVocab = (props) => {
 		.then((res) => res.json())
 		.then((data) => {
 			setRecords(shuffleArray(data));
+			setIsLoaded(true);
 		});
 	}, [setRecords]);
+
+	let [i, setI] = useState(0);
+	const GetNextCard = () => {
+		if(i < records.length-1) {
+			setI(++i);
+		}
+	}
+
+	const GetPrevCard = () => {
+		if(i > 0) {
+			setI(--i);
+		}
+	}
 
 	useEffect(() => {
 		fetch("/getReviewCategories")
@@ -40,30 +55,13 @@ const ReviewVocab = (props) => {
 	},[]);
 
 	if(isLoaded) {
-		if(setName) {
+		if(searchParams.get("set_name")) {
 			return (
-				<div>
-					<ul>
-						{records.map((record) => 
-							<li key={record.id}>{record.dutch}</li>
-						)}
-					</ul>
-				</div>
+				<VocabCard card={records[i]} GetPrevCard={GetPrevCard} GetNextCard={GetNextCard} />
 			);
 		} else {
 			return (
-				<div className="ReviewApp">
-					<h1>Choose a category</h1>
-					<ul>
-						{categories.map((category) =>
-							<li key={category}>
-								<Link className="category-list-item" to={"/review?set_name=" + category} onClick={GetRecordsForCategory}>
-									{category}
-								</Link>
-							</li>
-						)}
-					</ul>
-				</div>
+				<CategoryList categories={categories} GetRecordsForCategory={GetRecordsForCategory} />
 			);
 		}
 	}
