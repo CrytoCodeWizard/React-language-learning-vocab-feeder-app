@@ -5,9 +5,16 @@ const VocabCard = (props) => {
     return (
         <div>
             <ul>
-                <li key={props.card.id}>{props.card.dutch}</li>
+                <div className={props.frontCSS}>
+                    <p>{props.card.dutch}</p>
+                </div>
+                <div className={props.backCSS}>
+                    <p>{props.card.english}</p>
+                </div>
+
                 <button onClick={props.GetPrevCard}>Prev</button>
                 <button onClick={props.GetNextCard}>Next</button>
+                <button onClick={props.FlipCard}>Flip</button>
             </ul>
         </div>
     );

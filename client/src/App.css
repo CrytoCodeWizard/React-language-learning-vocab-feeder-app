@@ -51,3 +51,11 @@ nav > ul > li, nav {
   font-size: 28px;
   text-decoration: none;
 }
+
+.show-card {
+  display: block;
+}
+
+.hide-card {
+  display: none;
+}

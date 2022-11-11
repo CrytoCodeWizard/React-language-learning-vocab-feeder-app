@@ -11,6 +11,8 @@ const ReviewVocab = (props) => {
     const [categories, setCategories] = useState([]);
 	const [records, setRecords] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [frontCSS, setFrontCSS] = useState("show-card");
+    const [backCSS, setBackCSS] = useState("hide-card");
 
 	const GetRecordsForCategory = useCallback((e) => {
 		setIsLoaded(false);
@@ -32,14 +34,35 @@ const ReviewVocab = (props) => {
 
 	let [i, setI] = useState(0);
 	const GetNextCard = () => {
+		setFrontCSS('show-card');
+		setBackCSS('hide-card');
+		
 		if(i < records.length-1) {
 			setI(++i);
 		}
 	}
 
 	const GetPrevCard = () => {
+		setFrontCSS('show-card');
+		setBackCSS('hide-card');
+
 		if(i > 0) {
 			setI(--i);
+		}
+	}
+
+	const FlipCard = () => {
+		console.log('flipping');
+		if(frontCSS === 'show-card') {
+			setFrontCSS('hide-card');
+		} else {
+			setFrontCSS('show-card');
+		}
+
+		if(backCSS === 'show-card') {
+			setBackCSS('hide-card');
+		} else {
+			setBackCSS('show-card');
 		}
 	}
 
@@ -57,7 +80,7 @@ const ReviewVocab = (props) => {
 	if(isLoaded) {
 		if(searchParams.get("set_name")) {
 			return (
-				<VocabCard card={records[i]} GetPrevCard={GetPrevCard} GetNextCard={GetNextCard} />
+				<VocabCard card={records[i]} GetPrevCard={GetPrevCard} GetNextCard={GetNextCard} FlipCard={FlipCard} frontCSS={frontCSS} backCSS={backCSS}/>
 			);
 		} else {
 			return (
