@@ -7,12 +7,15 @@ import CategoryList from "../CategoryList/CategoryList";
 import VocabCard from "../VocabCard/VocabCard";
 
 const ReviewVocab = (props) => {
+	const SHOW_CARD_SIDE_CSS = 'vocab-card-show-side';
+	const HIDE_CARD_SIDE_CSS = 'vocab-card-hide-side';
+
 	const [searchParams] = useSearchParams();
     const [categories, setCategories] = useState([]);
 	const [records, setRecords] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [frontCSS, setFrontCSS] = useState("show-card");
-    const [backCSS, setBackCSS] = useState("hide-card");
+    const [frontCSS, setFrontCSS] = useState(SHOW_CARD_SIDE_CSS);
+    const [backCSS, setBackCSS] = useState(HIDE_CARD_SIDE_CSS);
 
 	const GetRecordsForCategory = useCallback((e) => {
 		setIsLoaded(false);
@@ -34,8 +37,8 @@ const ReviewVocab = (props) => {
 
 	let [i, setI] = useState(0);
 	const GetNextCard = () => {
-		setFrontCSS('show-card');
-		setBackCSS('hide-card');
+		setFrontCSS(SHOW_CARD_SIDE_CSS);
+		setBackCSS(HIDE_CARD_SIDE_CSS);
 		
 		if(i < records.length-1) {
 			setI(++i);
@@ -43,8 +46,8 @@ const ReviewVocab = (props) => {
 	}
 
 	const GetPrevCard = () => {
-		setFrontCSS('show-card');
-		setBackCSS('hide-card');
+		setFrontCSS(SHOW_CARD_SIDE_CSS);
+		setBackCSS(HIDE_CARD_SIDE_CSS);
 
 		if(i > 0) {
 			setI(--i);
@@ -52,17 +55,16 @@ const ReviewVocab = (props) => {
 	}
 
 	const FlipCard = () => {
-		console.log('flipping');
-		if(frontCSS === 'show-card') {
-			setFrontCSS('hide-card');
+		if(frontCSS === SHOW_CARD_SIDE_CSS) {
+			setFrontCSS(HIDE_CARD_SIDE_CSS);
 		} else {
-			setFrontCSS('show-card');
+			setFrontCSS(SHOW_CARD_SIDE_CSS);
 		}
 
-		if(backCSS === 'show-card') {
-			setBackCSS('hide-card');
+		if(backCSS === SHOW_CARD_SIDE_CSS) {
+			setBackCSS(HIDE_CARD_SIDE_CSS);
 		} else {
-			setBackCSS('show-card');
+			setBackCSS(SHOW_CARD_SIDE_CSS);
 		}
 	}
 
@@ -78,7 +80,7 @@ const ReviewVocab = (props) => {
 	},[]);
 
 	if(isLoaded) {
-		if(searchParams.get("set_name")) {
+		if(searchParams.get("set_name") && records.length > 0) {
 			return (
 				<VocabCard card={records[i]} GetPrevCard={GetPrevCard} GetNextCard={GetNextCard} FlipCard={FlipCard} frontCSS={frontCSS} backCSS={backCSS}/>
 			);

@@ -6,10 +6,10 @@ const VocabCard = (props) => {
         <div>
             <ul>
                 <div className={props.frontCSS}>
-                    <p>{props.card.dutch}</p>
+                    <p className="vocab-card-text">{props.card.dutch}</p>
                 </div>
                 <div className={props.backCSS}>
-                    <p>{props.card.english}</p>
+                    <p className="vocab-card-text">{props.card.english}</p>
                 </div>
 
                 <button onClick={props.GetPrevCard}>Prev</button>

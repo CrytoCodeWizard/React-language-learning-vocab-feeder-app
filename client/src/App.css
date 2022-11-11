@@ -52,10 +52,14 @@ nav > ul > li, nav {
   text-decoration: none;
 }
 
-.show-card {
+.vocab-card-text {
+  color: orange;
+}
+
+.vocab-card-show-side {
   display: block;
 }
 
-.hide-card {
+.vocab-card-hide-side {
   display: none;
 }
