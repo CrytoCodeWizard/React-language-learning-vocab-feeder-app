@@ -7,9 +7,10 @@ import { Link, useSearchParams  } from 'react-router-dom';
 const ReviewVocab = (props) => {
 	const [searchParams] = useSearchParams();
 	const setName = searchParams.get("set_name");
-    let [categories, setCategories] = useState([]);
-	let [records, setRecords] = useState([]);
-    const [canRender, setCanRender] = useState(false);
+
+    const [categories, setCategories] = useState([]);
+	const [records, setRecords] = useState([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
 	const GetRecordsForCategory = useCallback((e) => {
 		fetch('/getVocabForCategory', {
@@ -32,13 +33,13 @@ const ReviewVocab = (props) => {
 			.then((res) => res.json())
 			.then((data) => {
 				setCategories(data);
-				setCanRender(true);
+				setIsLoaded(true);
 			}).catch((err) => {
 				console.error('Error:', err);
 			});
 	},[]);
 
-	if(canRender) {
+	if(isLoaded) {
 		if(setName) {
 			return (
 				<div>
