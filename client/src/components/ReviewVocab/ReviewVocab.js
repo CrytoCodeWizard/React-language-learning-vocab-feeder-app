@@ -1,32 +1,21 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./../../App.css";
-import { withRouter, shuffleArray } from './../../utils.js';
-import { Link } from 'react-router-dom';
+import { shuffleArray } from './../../utils.js';
+import VocabCard from './../../components/VocabCard/VocabCard';
+import { Link, useSearchParams  } from 'react-router-dom';
 
-class ReviewVocab extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {categories: [], records: []};
-		this.handleLinkClick = this.handleLinkClick.bind(this);
-	}
+const ReviewVocab = (props) => {
+	const [searchParams] = useSearchParams();
+	const setName = searchParams.get("set_name");
+    let [categories, setCategories] = useState([]);
+	let [records, setRecords] = useState([]);
+    const [canRender, setCanRender] = useState(false);
 
-	getReviewCategories() {
-		fetch("/getReviewCategories")
-			.then((res) => res.json())
-			.then((data) => {
-				this.setState({categories: data});
-			});
-	}
-
-	handleLinkClick(event) {
-		this.retrieveVocabForCategory(event.target.innerText);
-	}
-
-	retrieveVocabForCategory(category) {
+	const GetRecordsForCategory = useCallback((e) => {
 		fetch('/getVocabForCategory', {
 			method: 'POST',
 			body: JSON.stringify({
-				category: category
+				category: e.target.innerText
 			}),
 			headers: {
 				'Content-type': 'application/json; charset=UTF-8',
@@ -34,24 +23,30 @@ class ReviewVocab extends React.Component {
 		})
 		.then((res) => res.json())
 		.then((data) => {
-			this.setState({records: shuffleArray(data)});
+			setRecords(shuffleArray(data));
 		});
-	}
+	}, [setRecords]);
 
-	async componentDidMount() {
-		await this.getReviewCategories();
-	}
+	useEffect(() => {
+		fetch("/getReviewCategories")
+			.then((res) => res.json())
+			.then((data) => {
+				setCategories(data);
+				setCanRender(true);
+			}).catch((err) => {
+				console.error('Error:', err);
+			});
+	},[]);
 
-	render() {
-		const setName = new URLSearchParams(window.location.search).get('set_name');
+	if(canRender) {
 		if(setName) {
 			return (
 				<div>
-					{this.state.records.map((record) =>
-						<li key={record.id}>
-							{record.dutch}
-						</li>
-					)}
+					<ul>
+						{records.map((record) => 
+							<li key={record.id}>{record.dutch}</li>
+						)}
+					</ul>
 				</div>
 			);
 		} else {
@@ -59,9 +54,9 @@ class ReviewVocab extends React.Component {
 				<div className="ReviewApp">
 					<h1>Choose a category</h1>
 					<ul>
-						{this.state.categories.map((category) =>
+						{categories.map((category) =>
 							<li key={category}>
-								<Link className="category-list-item" to={"/review?set_name=" + category} onClick={this.handleLinkClick}>
+								<Link className="category-list-item" to={"/review?set_name=" + category} onClick={GetRecordsForCategory}>
 									{category}
 								</Link>
 							</li>
@@ -73,4 +68,4 @@ class ReviewVocab extends React.Component {
 	}
 }
 
-export default withRouter(ReviewVocab);
+export default ReviewVocab;
