@@ -15,12 +15,13 @@ const VocabCard = (props) => {
                 </div>
             </div>
             <div className="vocab-card-controls">
-                <div className="vocab-card-controls-nav">
-                    <button onClick={props.GetPrevCard} className={props.css.prevCSS} style={{float: 'left'}}>&#8592;</button>
-                    <button onClick={props.GetNextCard} className={props.css.nextCSS} style={{float: 'right'}}>&#8594;</button>
-                </div>
                 <div className="vocab-card-controls-flip">
-                    <button onClick={props.FlipCard}>Flip</button>
+                    <button onClick={props.FlipCard} className="vocab-card-controls-flip-btn">Flip</button>
+                </div>
+                <br className="vocab-card-controls-spacer" />
+                <div className="vocab-card-controls-nav">
+                    <button onClick={props.GetPrevCard} className={props.css.prevCSS}>❮ Prev</button>
+                    <button onClick={props.GetNextCard} className={props.css.nextCSS}>Next ❯</button>
                 </div>
             </div>
         </div>
