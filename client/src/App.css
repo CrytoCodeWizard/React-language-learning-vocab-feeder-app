@@ -52,8 +52,17 @@ nav > ul > li, nav {
   text-decoration: none;
 }
 
+.vocab-card {
+  min-width: 250px;
+  max-width: 350px;
+  text-align: center;
+  background: #803166;
+  margin: 0 auto;
+}
+
 .vocab-card-text {
-  color: orange;
+  color: white;
+  font-size: 32px;
 }
 
 .vocab-card-show-side {
