@@ -1,5 +1,6 @@
 import React from "react";
 import "./../../App.css";
+import "./SlackDailyVocab.css";
 import { withRouter } from './../../utils.js';
 
 class SlackDailyVocab extends React.Component {
@@ -45,11 +46,16 @@ class SlackDailyVocab extends React.Component {
 	render() {
 		return (
 			<div className="SlackApp">
-                <form onSubmit={this.handleSubmit}>
-                    <label>
-                        <input type="number" min="1" max="25" placeholder="# of Records to Send" name="recordsToSend" onChange={this.handleRecordCountChange} required/>
-                    </label>
-                    <input type="submit" value={!this.state.data ? "Loading..." : this.state.data.sendDailySlackBtnLabel} />
+				<h1>Slack App</h1>
+                <form onSubmit={this.handleSubmit} className="slack-form">
+					<div className="slack-form-inputs">
+						<label>
+							<input type="number" min="1" max="25" placeholder="# of Records to Send" name="recordsToSend" onChange={this.handleRecordCountChange} required/>
+						</label>
+					</div>
+					<div className="slack-form-controls">
+                    	<input type="submit" value={!this.state.data ? "Loading..." : this.state.data.sendDailySlackBtnLabel} />
+					</div>
                 </form>
 			</div>
 		);
