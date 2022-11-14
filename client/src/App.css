@@ -1,6 +1,15 @@
 .App {
-  background-color: #282c34;
+  background-color: #171820;
   min-height: 100vh;
+}
+
+.Windmill-Icon {
+  text-align: center;
+}
+
+.Windmill-Icon > img {
+  height: 500px;
+  max-width: 80%;
 }
 
 .App-header {
@@ -19,19 +28,19 @@
 nav > ul > li, nav {
   display: inline-block;
   margin: 0px 8px;
-  font-size: calc(4px + 2vmin);
+  font-size: calc(6px + 2vmin);
 }
 
 .navAnchor {
-  color: #CC5500;
+  color: #df861d;
   text-decoration: none;
 }
 
 .navAnchor:hover, .category-list-item:hover {
-  color: orange;
+  color: #fdc029;
 }
 
-.ReviewApp > h1 {
+h1 {
   text-align: center;
   color: white;
 }
@@ -47,19 +56,7 @@ nav > ul > li, nav {
 }
 
 .category-list-item {
-  color: #CC5500;
+  color: #df861d;
   font-size: 28px;
   text-decoration: none;
-}
-
-.vocab-card-text {
-  color: orange;
-}
-
-.vocab-card-show-side {
-  display: block;
-}
-
-.vocab-card-hide-side {
-  display: none;
 }

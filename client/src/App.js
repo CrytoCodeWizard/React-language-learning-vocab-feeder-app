@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import "./App.css";
 import SlackDailyVocab from "./components/SlackDailyVocab/SlackDailyVocab";
 import ReviewVocab from "./components/ReviewVocab/ReviewVocab";
+import Home from "./components/Home/Home";
 
 class App extends React.Component {
 	constructor(props) {
@@ -28,7 +29,7 @@ class App extends React.Component {
 						</div>
 					</header>
 					<Routes>
-						<Route exact path="/" />
+						<Route exact path="/" element={<Home/>}/>
 						<Route exact path="/slack" element={<SlackDailyVocab/>}/>
 						<Route exact path="/review" element={<ReviewVocab/>}/>
 					</Routes>
