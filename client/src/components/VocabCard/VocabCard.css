@@ -1,0 +1,84 @@
+.vocab-card-wrapper {
+  text-align: center;
+  margin-top: 5vh;
+}
+
+.vocab-card {
+  min-width: 350px;
+  max-width: 350px;
+  height: 200px;
+  text-align: center;
+  background: #aa3d01;
+  margin: 0 auto;
+  display: inline-block;
+  border-radius: 5px;
+  border: 2px solid #bcb6ae;
+}
+
+.vocab-card > div > a {
+  text-decoration: none;
+}
+
+.vocab-card-text {
+  color: white;
+  font-size: 32px;
+  margin-top: 75px;
+}
+
+.vocab-card-text:hover {
+  color: white;
+}
+
+.vocab-card-show-side {
+  display: block;
+}
+
+.vocab-card-hide-side {
+  display: none;
+}
+
+.vocab-card-controls {
+  text-align: center;
+}
+
+.vocab-card-controls-flip-btn {
+  background-color: #fdc029;
+  font-size: 18px;
+  border: none;
+  padding: 16px 32px;
+  margin-top: 12px;
+  width: 350px;
+  border-radius: 5px;
+  color: black;
+}
+
+.vocab-card-controls-spacer {
+  clear: both;
+}
+
+.vocab-card-controls-nav {
+  margin: 16px auto;
+  width: 350px;
+}
+
+.vocab-card-controls-nav > button {
+  font-size: 16px;
+  background-color: #df861d;
+  border: none;
+  padding: 16px 24px;
+  width: 150px;
+  border-radius: 5px;
+  color: black;
+}
+
+.vocab-card-controls-nav > button:nth-child(1) {
+  float: left;
+}
+
+.vocab-card-controls-nav > button:nth-child(2) {
+  float: right;
+}
+
+.vocab-card-hide-next-btn, .vocab-card-hide-prev-btn {
+  visibility: hidden;
+}
