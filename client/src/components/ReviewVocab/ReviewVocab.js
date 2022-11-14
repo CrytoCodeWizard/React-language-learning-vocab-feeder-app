@@ -22,6 +22,17 @@ const ReviewVocab = (props) => {
 		prevCSS : HIDE_PREV_BTN_CSS
 	});
 
+	const resetState = () => {
+		setI(0);
+        setCSS(css => ({
+            ...css,
+            frontCSS : SHOW_CARD_SIDE_CSS,
+			backCSS : HIDE_CARD_SIDE_CSS,
+			prevCSS : HIDE_PREV_BTN_CSS,
+			nextCSS : null
+        }));
+	}
+
 	const GetRecordsForCategory = useCallback((e) => {
 		setIsLoaded(false);
 		fetch('/getVocabForCategory', {
@@ -35,6 +46,7 @@ const ReviewVocab = (props) => {
 		})
 		.then((res) => res.json())
 		.then((data) => {
+			resetState();
 			setRecords(shuffleArray(data));
 			setIsLoaded(true);
 		});
