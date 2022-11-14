@@ -62,11 +62,12 @@ nav > ul > li, nav {
 }
 
 .vocab-card-wrapper {
-  text-align: center;;
+  text-align: center;
+  margin-top: 20vh;
 }
 
 .vocab-card {
-  min-width: 250px;
+  min-width: 350px;
   max-width: 350px;
   text-align: center;
   background: #aa3d01;
@@ -101,7 +102,7 @@ nav > ul > li, nav {
 
 .vocab-card-controls-nav {
   margin: 8px auto;
-  width: 250px;
+  width: 350px;
 }
 
 .vocab-card-hide-next-btn, .vocab-card-hide-prev-btn {
