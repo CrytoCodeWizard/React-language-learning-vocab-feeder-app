@@ -63,3 +63,7 @@ nav > ul > li, nav {
 .vocab-card-hide-side {
   display: none;
 }
+
+.vocab-card-hide-next-btn, .vocab-card-hide-prev-btn {
+  display: none;
+}

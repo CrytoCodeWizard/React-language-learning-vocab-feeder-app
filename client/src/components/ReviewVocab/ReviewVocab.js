@@ -9,13 +9,19 @@ import VocabCard from "../VocabCard/VocabCard";
 const ReviewVocab = (props) => {
 	const SHOW_CARD_SIDE_CSS = 'vocab-card-show-side';
 	const HIDE_CARD_SIDE_CSS = 'vocab-card-hide-side';
+	const SHOW_NEXT_BTN_CSS = 'vocab-card-hide-next-btn';
+	const SHOW_PREV_BTN_CSS = 'vocab-card-hide-prev-btn';
 
 	const [searchParams] = useSearchParams();
     const [categories, setCategories] = useState([]);
 	const [records, setRecords] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [frontCSS, setFrontCSS] = useState(SHOW_CARD_SIDE_CSS);
-    const [backCSS, setBackCSS] = useState(HIDE_CARD_SIDE_CSS);
+	const [css, setCSS] = useState({
+		frontCSS : SHOW_CARD_SIDE_CSS, 
+		backCSS : HIDE_CARD_SIDE_CSS}
+	);
+    // const [frontCSS, setFrontCSS] = useState(SHOW_CARD_SIDE_CSS);
+    // const [backCSS, setBackCSS] = useState(HIDE_CARD_SIDE_CSS);
 
 	const GetRecordsForCategory = useCallback((e) => {
 		setIsLoaded(false);
@@ -36,9 +42,14 @@ const ReviewVocab = (props) => {
 	}, [setRecords]);
 
 	let [i, setI] = useState(0);
-	const GetNextCard = () => {
-		setFrontCSS(SHOW_CARD_SIDE_CSS);
-		setBackCSS(HIDE_CARD_SIDE_CSS);
+	const GetNextCard = () => {	    
+        setCSS(css => ({
+            ...css,
+            frontCSS: SHOW_CARD_SIDE_CSS,
+			backCSS: HIDE_CARD_SIDE_CSS
+        }));
+		// setFrontCSS(SHOW_CARD_SIDE_CSS);
+		// setBackCSS(HIDE_CARD_SIDE_CSS);
 		
 		if(i < records.length-1) {
 			setI(++i);
@@ -46,25 +57,47 @@ const ReviewVocab = (props) => {
 	}
 
 	const GetPrevCard = () => {
-		setFrontCSS(SHOW_CARD_SIDE_CSS);
-		setBackCSS(HIDE_CARD_SIDE_CSS);
+		// setFrontCSS(SHOW_CARD_SIDE_CSS);
+		// setBackCSS(HIDE_CARD_SIDE_CSS);
+
+        setCSS(css => ({
+            ...css,
+            frontCSS: SHOW_CARD_SIDE_CSS,
+			backCSS: HIDE_CARD_SIDE_CSS
+        }));
 
 		if(i > 0) {
+			if(i === 1) {
+				// set
+
+			}
 			setI(--i);
 		}
 	}
 
 	const FlipCard = () => {
-		if(frontCSS === SHOW_CARD_SIDE_CSS) {
-			setFrontCSS(HIDE_CARD_SIDE_CSS);
+		if(css.frontCSS === SHOW_CARD_SIDE_CSS) {
+			setCSS(css => ({
+				...css,
+				frontCSS: HIDE_CARD_SIDE_CSS
+			}));
 		} else {
-			setFrontCSS(SHOW_CARD_SIDE_CSS);
+			setCSS(css => ({
+				...css,
+				frontCSS: SHOW_CARD_SIDE_CSS
+			}));
 		}
 
-		if(backCSS === SHOW_CARD_SIDE_CSS) {
-			setBackCSS(HIDE_CARD_SIDE_CSS);
+		if(css.backCSS === SHOW_CARD_SIDE_CSS) {
+			setCSS(css => ({
+				...css,
+				backCSS: HIDE_CARD_SIDE_CSS
+			}));
 		} else {
-			setBackCSS(SHOW_CARD_SIDE_CSS);
+			setCSS(css => ({
+				...css,
+				backCSS: SHOW_CARD_SIDE_CSS
+			}));
 		}
 	}
 
@@ -82,7 +115,7 @@ const ReviewVocab = (props) => {
 	if(isLoaded) {
 		if(searchParams.get("set_name") && records.length > 0) {
 			return (
-				<VocabCard card={records[i]} GetPrevCard={GetPrevCard} GetNextCard={GetNextCard} FlipCard={FlipCard} frontCSS={frontCSS} backCSS={backCSS}/>
+				<VocabCard card={records[i]} GetPrevCard={GetPrevCard} GetNextCard={GetNextCard} FlipCard={FlipCard} css={css} />
 			);
 		} else {
 			return (

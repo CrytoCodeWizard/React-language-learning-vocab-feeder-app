@@ -5,10 +5,10 @@ const VocabCard = (props) => {
     return (
         <div>
             <ul>
-                <div className={props.frontCSS}>
+                <div className={props.css.frontCSS}>
                     <p className="vocab-card-text">{props.card.dutch}</p>
                 </div>
-                <div className={props.backCSS}>
+                <div className={props.css.backCSS}>
                     <p className="vocab-card-text">{props.card.english}</p>
                 </div>
 
