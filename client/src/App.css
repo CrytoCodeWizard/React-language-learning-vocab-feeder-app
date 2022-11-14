@@ -40,7 +40,7 @@ nav > ul > li, nav {
   color: #fdc029;
 }
 
-.ReviewApp > h1 {
+h1 {
   text-align: center;
   color: white;
 }
@@ -63,12 +63,13 @@ nav > ul > li, nav {
 
 .vocab-card-wrapper {
   text-align: center;
-  margin-top: 20vh;
+  margin-top: 5vh;
 }
 
 .vocab-card {
   min-width: 350px;
   max-width: 350px;
+  height: 200px;
   text-align: center;
   background: #aa3d01;
   margin: 0 auto;
@@ -82,6 +83,7 @@ nav > ul > li, nav {
 .vocab-card-text {
   color: #bcb6ae;
   font-size: 32px;
+  margin-top: 75px;
 }
 
 .vocab-card-text:hover {
