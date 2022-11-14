@@ -107,7 +107,10 @@ const ReviewVocab = (props) => {
 	if(isLoaded) {
 		if(searchParams.get("set_name") && records.length > 0) {
 			return (
-				<VocabCard card={records[i]} GetPrevCard={GetPrevCard} GetNextCard={GetNextCard} FlipCard={FlipCard} css={css} />
+				<div className="VocabApp">
+					<h1>Category: {searchParams.get("set_name")}</h1>
+					<VocabCard card={records[i]} GetPrevCard={GetPrevCard} GetNextCard={GetNextCard} FlipCard={FlipCard} css={css} />
+				</div>
 			);
 		} else {
 			return (
