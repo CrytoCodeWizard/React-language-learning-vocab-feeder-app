@@ -1,6 +1,7 @@
 import React from "react";
 import "./../../App.css";
 import "./SlackDailyVocab.css";
+import "./Snackbar.css";
 import { withRouter } from './../../utils.js';
 
 class SlackDailyVocab extends React.Component {
@@ -29,6 +30,12 @@ class SlackDailyVocab extends React.Component {
     this.sendSlack(this.state.recordCount);
   }
 
+  showToast() {
+    let x = document.getElementById("snackbar");
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+  }
+
   sendSlack(recordCount) {
     fetch('/sendSlack', {
       method: 'POST',
@@ -39,7 +46,7 @@ class SlackDailyVocab extends React.Component {
         'Content-type': 'application/json; charset=UTF-8',
       },
     }).then((res) => {
-      console.log(res);
+      this.showToast();
     });
   }
 
@@ -57,6 +64,7 @@ class SlackDailyVocab extends React.Component {
             <input type="submit" value={!this.state.data ? "Loading..." : this.state.data.sendDailySlackBtnLabel} />
           </div>
         </form>
+        <div id="snackbar">Your vocab has been sent to Slack!</div>
       </div>
     );
   }
