@@ -1,35 +1,33 @@
 .slack-form {
-    /* margin: 0 auto; */
-    text-align: center;
+  text-align: center;
 }
 
 .slack-form input {
-    min-width: 200px;
+  min-width: 200px;
 }
 
 .slack-form-inputs > label > input {
-    width: 300px;
-
-    height: 40px;
-    background-color: #bcb6ae;
-    border: none;
+  width: 300px;
+  height: 40px;
+  background-color: #bcb6ae;
+  border: none;
 }
 
 .slack-form-inputs > label > input::placeholder {
-    color: black;
+  color: black;
 }
 
 .slack-form-controls {
-    margin-top: 12px;
+  margin-top: 12px;
 }
 
 .slack-form-controls > input {
-    background-color: #fdc029;
-    font-size: 18px;
-    border: none;
-    padding: 16px 32px;
-    margin-top: 12px;
-    width: 350px;
-    border-radius: 5px;
-    color: black;
+  background-color: #fdc029;
+  font-size: 18px;
+  border: none;
+  padding: 16px 32px;
+  margin-top: 12px;
+  width: 350px;
+  border-radius: 5px;
+  color: black;
 }
