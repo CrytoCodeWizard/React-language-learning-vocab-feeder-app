@@ -5,7 +5,9 @@ const VocabCard = (props) => {
     return (
         <div className="vocab-card">
             <div className={props.css.frontCSS}>
-                <p className="vocab-card-text">{props.card.dutch}</p>
+                <a href={props.card.pronunciationlink} target="_blank">
+                    <p className="vocab-card-text">{props.card.dutch}</p>
+                </a>
             </div>
             <div className={props.css.backCSS}>
                 <p className="vocab-card-text">{props.card.english}</p>

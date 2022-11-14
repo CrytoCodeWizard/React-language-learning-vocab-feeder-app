@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import "./App.css";
 import SlackDailyVocab from "./components/SlackDailyVocab/SlackDailyVocab";
 import ReviewVocab from "./components/ReviewVocab/ReviewVocab";
+import WindmillSVG from "./windmill.svg";
 
 class App extends React.Component {
 	constructor(props) {
@@ -33,6 +34,9 @@ class App extends React.Component {
 						<Route exact path="/review" element={<ReviewVocab/>}/>
 					</Routes>
 				</BrowserRouter>
+				<div className="Windmill-Icon">
+					<img src={WindmillSVG} alt="Windmill SVG" />
+				</div>
 			</div>
 		);
 	}
