@@ -9,8 +9,8 @@ import VocabCard from "../VocabCard/VocabCard";
 const ReviewVocab = (props) => {
 	const SHOW_CARD_SIDE_CSS = 'vocab-card-show-side';
 	const HIDE_CARD_SIDE_CSS = 'vocab-card-hide-side';
-	const SHOW_NEXT_BTN_CSS = 'vocab-card-hide-next-btn';
-	const SHOW_PREV_BTN_CSS = 'vocab-card-hide-prev-btn';
+	const HIDE_NEXT_BTN_CSS = 'vocab-card-hide-next-btn';
+	const HIDE_PREV_BTN_CSS = 'vocab-card-hide-prev-btn';
 
 	const [searchParams] = useSearchParams();
     const [categories, setCategories] = useState([]);
@@ -18,10 +18,9 @@ const ReviewVocab = (props) => {
     const [isLoaded, setIsLoaded] = useState(false);
 	const [css, setCSS] = useState({
 		frontCSS : SHOW_CARD_SIDE_CSS, 
-		backCSS : HIDE_CARD_SIDE_CSS}
-	);
-    // const [frontCSS, setFrontCSS] = useState(SHOW_CARD_SIDE_CSS);
-    // const [backCSS, setBackCSS] = useState(HIDE_CARD_SIDE_CSS);
+		backCSS : HIDE_CARD_SIDE_CSS,
+		prevCSS : HIDE_PREV_BTN_CSS
+	});
 
 	const GetRecordsForCategory = useCallback((e) => {
 		setIsLoaded(false);
@@ -42,14 +41,16 @@ const ReviewVocab = (props) => {
 	}, [setRecords]);
 
 	let [i, setI] = useState(0);
-	const GetNextCard = () => {	    
+	const GetNextCard = () => {
+		const nextStyle = (i === records.length-2) ? HIDE_NEXT_BTN_CSS : null;
+
         setCSS(css => ({
             ...css,
-            frontCSS: SHOW_CARD_SIDE_CSS,
-			backCSS: HIDE_CARD_SIDE_CSS
+            frontCSS : SHOW_CARD_SIDE_CSS,
+			backCSS : HIDE_CARD_SIDE_CSS,
+			nextCSS : nextStyle,
+			prevCSS : null
         }));
-		// setFrontCSS(SHOW_CARD_SIDE_CSS);
-		// setBackCSS(HIDE_CARD_SIDE_CSS);
 		
 		if(i < records.length-1) {
 			setI(++i);
@@ -57,48 +58,27 @@ const ReviewVocab = (props) => {
 	}
 
 	const GetPrevCard = () => {
-		// setFrontCSS(SHOW_CARD_SIDE_CSS);
-		// setBackCSS(HIDE_CARD_SIDE_CSS);
+		const prevStyle = i === 1 ? HIDE_PREV_BTN_CSS : null;
 
         setCSS(css => ({
             ...css,
-            frontCSS: SHOW_CARD_SIDE_CSS,
-			backCSS: HIDE_CARD_SIDE_CSS
+            frontCSS : SHOW_CARD_SIDE_CSS,
+			backCSS : HIDE_CARD_SIDE_CSS,
+			nextCSS : null,
+			prevCSS : prevStyle
         }));
 
 		if(i > 0) {
-			if(i === 1) {
-				// set
-
-			}
 			setI(--i);
 		}
 	}
 
 	const FlipCard = () => {
-		if(css.frontCSS === SHOW_CARD_SIDE_CSS) {
-			setCSS(css => ({
-				...css,
-				frontCSS: HIDE_CARD_SIDE_CSS
-			}));
-		} else {
-			setCSS(css => ({
-				...css,
-				frontCSS: SHOW_CARD_SIDE_CSS
-			}));
-		}
-
-		if(css.backCSS === SHOW_CARD_SIDE_CSS) {
-			setCSS(css => ({
-				...css,
-				backCSS: HIDE_CARD_SIDE_CSS
-			}));
-		} else {
-			setCSS(css => ({
-				...css,
-				backCSS: SHOW_CARD_SIDE_CSS
-			}));
-		}
+		setCSS(css => ({
+			...css,
+			frontCSS : css.frontCSS === HIDE_CARD_SIDE_CSS ? SHOW_CARD_SIDE_CSS : HIDE_CARD_SIDE_CSS,
+			backCSS : css.backCSS === HIDE_CARD_SIDE_CSS ? SHOW_CARD_SIDE_CSS : HIDE_CARD_SIDE_CSS
+		}));
 	}
 
 	useEffect(() => {

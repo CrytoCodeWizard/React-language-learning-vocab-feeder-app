@@ -12,8 +12,8 @@ const VocabCard = (props) => {
                     <p className="vocab-card-text">{props.card.english}</p>
                 </div>
 
-                <button onClick={props.GetPrevCard}>Prev</button>
-                <button onClick={props.GetNextCard}>Next</button>
+                <button onClick={props.GetPrevCard} className={props.css.prevCSS}>Prev</button>
+                <button onClick={props.GetNextCard} className={props.css.nextCSS}>Next</button>
                 <button onClick={props.FlipCard}>Flip</button>
             </ul>
         </div>
