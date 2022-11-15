@@ -6,6 +6,7 @@ const VocabCard = (props) => {
   return (
     <div className="vocab-card-wrapper">
       <div className="vocab-card">
+        <img className="vocab-card-img" src={Constants.S3_BUCKET_URL + props.card.id + '.png'} alt="" onError={(event) => event.target.src='image-needed.png'} onLoad={(event) => event.target.style.visibility = 'visible'}/>
         <div className={props.css.frontCSS}>
           <a href={props.card.pronunciationlink} target="_blank" rel="noreferrer">
             <p className="vocab-card-text">{props.card.dutch}</p>
