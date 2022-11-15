@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from 'react-router-dom';
 
 import "./../../App.css";
+import * as Constants from "./../../constants";
 
 const CategoryList = (props) => {
   return (
@@ -10,7 +11,7 @@ const CategoryList = (props) => {
       <ul>
         {props.categories.map((category) =>
           <li key={category}>
-            <Link className="category-list-item" to={"/review?set_name=" + category} onClick={props.GetRecordsForCategory}>
+            <Link className="category-list-item" to={Constants.REVIEW_ENDPOINT_SETNAME_PARAM + category} onClick={props.GetRecordsForCategory}>
               {category}
             </Link>
           </li>

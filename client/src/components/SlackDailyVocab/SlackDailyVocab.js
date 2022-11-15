@@ -3,6 +3,7 @@ import "./../../App.css";
 import "./SlackDailyVocab.css";
 import "./Snackbar.css";
 import { withRouter } from './../../utils.js';
+import * as Constants from './../../constants';
 
 class SlackDailyVocab extends React.Component {
   constructor(props) {
@@ -14,7 +15,7 @@ class SlackDailyVocab extends React.Component {
   }
 
   componentDidMount() {
-    fetch("/getSlackInfo")
+    fetch(Constants.GET_SLACK_INFO_ENDPOINT)
       .then((res) => res.json())
       .then((data) => {
         this.setState({data: data})
@@ -37,13 +38,13 @@ class SlackDailyVocab extends React.Component {
   }
 
   sendSlack(recordCount) {
-    fetch('/sendSlack', {
-      method: 'POST',
+    fetch(Constants.SEND_SLACK_MSG_ENDPOINT, {
+      method: Constants.POST_METHOD,
       body: JSON.stringify({
         recordCount: recordCount
       }),
       headers: {
-        'Content-type': 'application/json; charset=UTF-8',
+        'Content-type': Constants.CONTENT_TYPE_JSON_UTF8,
       },
     }).then((res) => {
       this.showToast();
@@ -57,14 +58,14 @@ class SlackDailyVocab extends React.Component {
         <form onSubmit={this.handleSubmit} className="slack-form">
           <div className="slack-form-inputs">
             <label>
-              <input type="number" min="1" max="25" placeholder="# of Records to Send" name="recordsToSend" onChange={this.handleRecordCountChange} required/>
+              <input type="number" min={Constants.SLACK_RECORD_MIN} max={Constants.SLACK_RECORD_MAX} placeholder={Constants.SLACK_INPUT_PLACEHOLDER} name="recordsToSend" onChange={this.handleRecordCountChange} required/>
             </label>
           </div>
           <div className="slack-form-controls">
-            <input type="submit" value={!this.state.data ? "Loading..." : this.state.data.sendDailySlackBtnLabel} />
+            <input type="submit" value={!this.state.data ? Constants.LOADING_STR : this.state.data.sendDailySlackBtnLabel} />
           </div>
         </form>
-        <div id="snackbar">Your vocab has been sent to Slack!</div>
+        <div id="snackbar">{Constants.SLACK_SENT_CONFIRMATION}</div>
       </div>
     );
   }
