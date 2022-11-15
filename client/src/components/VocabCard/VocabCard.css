@@ -19,10 +19,16 @@
   text-decoration: none;
 }
 
+.vocab-card-img {
+  margin-top: 12px;
+  width: 90px;
+  height: 90px;
+}
+
 .vocab-card-text {
   color: white;
   font-size: 32px;
-  margin-top: 75px;
+  margin-top: 24px;
 }
 
 .vocab-card-text:hover {

@@ -24,7 +24,7 @@ export const VOCAB_CARD_NEXT_BUTTON_STR = "Next ❯";
 export const VOCAB_CARD_FLIP_BUTTON_STR = "Flip";
 
 // AWS
-export const S3_BUCKET_URL = "https://vocab-feeder.s3.eu-west-3.amazonaws.com/";
+export const S3_BUCKET_URL = "https://vocab-feeder.s3.eu-west-3.amazonaws.com/vocab-images/";
 
 // Generic
 export const ERROR_STR = "Error: ";
