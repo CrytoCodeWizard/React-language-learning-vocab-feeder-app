@@ -126,14 +126,14 @@ app.get("/getReviewCategories", async (req, res) => {
 		if(err) {
 			return console.error('Error acquiring client', err.stack)
 		}
-		client.query("SELECT DISTINCT on (set_name) set_name FROM vocabulary WHERE set_name != ''", async (err, result) => {
+		client.query("SELECT name FROM category WHERE name != '' ORDER BY category_order ASC", async (err, result) => {
 			release();
 			if(err) {
 				return console.error('Error executing query', err.stack);
 			} else {
 				let setNames = [];
 				for(let row in result.rows) {
-					setNames.push(result.rows[row].set_name);
+					setNames.push(result.rows[row].name);
 				}
 
 				res.send(setNames);
