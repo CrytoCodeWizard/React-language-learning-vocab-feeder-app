@@ -102,11 +102,17 @@ function buildDutchBlockStr(data) {
 	];
 	
 	for(let entry in data) {
+		let pronunciationString = '';
+		if(data[entry].pronunciationlink === '#') {
+			pronunciationString = 'No URL found';
+		} else {
+			pronunciationString = '<"+data[entry].pronunciationlink+"|(Pronunciation)>';
+		}
 		blockStr.push({
 			"type" : "section",
 			"fields" : [{
 				"type": "mrkdwn",
-				"text" : "*Dutch:*\n"+data[entry].dutch+" <"+data[entry].pronunciationlink+"|(Pronunciation)>"
+				"text" : "*Dutch:*\n"+data[entry].dutch+" - "+ pronunciationString
 			},
 			{
 				"type": "mrkdwn",
