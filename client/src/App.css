@@ -63,8 +63,27 @@ h1 {
   border: 2px solid #bcb6ae;
 }
 
-.category-list-item {
+.category-list-item, .review-type-item {
   color: #df861d;
   font-size: 28px;
   text-decoration: none;
+}
+
+.review-type-options {
+  padding: 12px;
+  display: flex;
+}
+
+.review-type-item {
+  border: 1px solid #bcb6ae;
+  margin: 12px;
+  padding: 12px;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.review-type-item:hover {
+  background-color: #bcb6ae;
+  color: white;
+  cursor: pointer;
 }
