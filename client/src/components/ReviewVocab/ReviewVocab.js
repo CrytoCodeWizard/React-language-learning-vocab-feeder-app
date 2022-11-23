@@ -7,6 +7,7 @@ import * as Constants from "./../../constants";
 
 import CategoryList from "../CategoryList/CategoryList";
 import VocabCard from "../VocabCard/VocabCard";
+import ReviewType from "../ReviewType/ReviewType";
 
 const ReviewVocab = (props) => {
   const [searchParams] = useSearchParams();
@@ -18,9 +19,11 @@ const ReviewVocab = (props) => {
     backCSS : Constants.HIDE_CARD_SIDE_CSS,
     prevCSS : Constants.HIDE_PREV_BTN_CSS
   });
+  const [correctCount, setCorrectCount] = useState(0);
 
   const resetState = () => {
     setI(0);
+    setCorrectCount(0);
     setCSS(css => ({
       ...css,
       frontCSS : Constants.SHOW_CARD_SIDE_CSS,
@@ -103,12 +106,18 @@ const ReviewVocab = (props) => {
 
   if(isLoaded) {
     if(searchParams.get(Constants.SETNAME_QUERY_PARAM) && records.length > 0) {
-      return (
-        <div className="VocabApp">
-          <h1>Category: {searchParams.get(Constants.SETNAME_QUERY_PARAM)}</h1>
-          <VocabCard card={records[i]} GetPrevCard={GetPrevCard} GetNextCard={GetNextCard} FlipCard={FlipCard} css={css} />
-        </div>
-      );
+      if(!searchParams.get(Constants.REVIEWTYPE_QUERY_PARAM)) {
+        return(
+          <ReviewType />
+        );
+      } else {
+        return (
+          <div className="VocabApp">
+            <h1>Category: {searchParams.get(Constants.SETNAME_QUERY_PARAM)}</h1>
+            <VocabCard card={records[i]} GetPrevCard={GetPrevCard} GetNextCard={GetNextCard} FlipCard={FlipCard} css={css} setCorrectCount={setCorrectCount} correctCount={correctCount} />
+          </div>
+        );
+      }
     } else {
       return (
         <CategoryList categories={categories} GetRecordsForCategory={GetRecordsForCategory} />

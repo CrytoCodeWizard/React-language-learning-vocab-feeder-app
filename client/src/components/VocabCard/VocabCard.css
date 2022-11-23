@@ -47,14 +47,22 @@
   text-align: center;
 }
 
-.vocab-card-controls-flip-btn {
-  background-color: #fdc029;
+.vocab-card-controls-btn {
   font-size: 18px;
   border: none;
   padding: 16px 32px;
   margin-top: 12px;
   width: 350px;
   border-radius: 5px;
+}
+
+.vocab-card-controls-disable-btn {
+  background-color: darkgrey;
+  color: grey;
+}
+
+.vocab-card-controls-flip-btn {
+  background-color: #fdc029;
   color: black;
 }
 
