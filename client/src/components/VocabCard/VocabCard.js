@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSearchParams  } from 'react-router-dom';
+import "./../../Snackbar.css";
 
 import "./VocabCard.css";
 import * as Constants from "./../../constants";
@@ -9,17 +10,20 @@ const VocabCard = (props) => {
   const [answer, setAnswer] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const [css, setCSS] = useState({
-    buttonCSS : Constants.VOCAB_CARD_ORIGINAL_BUTTON_CSS
+    buttonCSS : Constants.VOCAB_CARD_ORIGINAL_BUTTON_CSS,
+    prevCSS : Constants.HIDE_PREV_BTN_CSS
   });
 
   const HandleSubmit = (e) => {
     e.preventDefault();
+    setIsDisabled(true);
+    setCSS({buttonCSS : Constants.VOCAB_CARD_DISABLED_BUTTON_CSS});
+
     if(props.card.english.includes(answer)) {
       props.setCorrectCount((props.correctCount)+1);
-      setIsDisabled(true);
-      setCSS({buttonCSS : Constants.VOCAB_CARD_DISABLED_BUTTON_CSS});
+      ShowToast(true);
     } else {
-      console.log('incorrect.');
+      ShowToast(false);
     }
   }
 
@@ -27,6 +31,17 @@ const VocabCard = (props) => {
     e.preventDefault();
     setAnswer(e.target.value);
   }
+
+  const ShowToast = ((isCorrect) => {
+    let x = document.getElementById("snackbar");
+    x.className = isCorrect ? "showCorrect" : 'showIncorrect';
+    x.innerText = isCorrect ? 'That\'s right!' : 'Incorrect.';
+
+    setTimeout(function(){
+      x.className = x.className.replace("showIncorrect", "");
+      x.className = x.className.replace("showCorrect", "");
+    }, 5000);
+  });
 
   if(searchParams.get(Constants.REVIEWTYPE_QUERY_PARAM) === Constants.VOCAB_CARD_REVIEWTYPE_PRACTICE_STR) {
     return (
@@ -71,7 +86,7 @@ const VocabCard = (props) => {
             </div>
           </div>
           <div className="vocab-card-input">
-              <input type="text" placeholder="Enter your answer" onChange={HandleAnswerChange} required/>
+              <input type="text" placeholder={Constants.VOCAB_CARD_ANSWER_PLACEHOLDER} onChange={HandleAnswerChange} required disabled={isDisabled}/>
           </div>
           <div className="vocab-card-controls">
             <div className="vocab-card-controls-flip">
@@ -84,6 +99,7 @@ const VocabCard = (props) => {
             </div>
           </div>
         </form>
+        <div id="snackbar"></div>
       </div>
     );
   }
