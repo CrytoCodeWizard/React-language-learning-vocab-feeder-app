@@ -46,13 +46,15 @@ h1 {
 }
 
 .ReviewApp > ul {
-  padding: 0;
+  padding: 0px;
+  margin: 0px;
   text-align: center;
   list-style: none;
 }
 
 .ReviewApp > ul > li {
-  margin: 10px auto;
+  margin: 0px auto;
+  padding-bottom: 12px;
 }
 
 .category-list-item {
