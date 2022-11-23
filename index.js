@@ -166,17 +166,22 @@ app.post("/getVocabForCategory", async (req, res) => {
 		body += chunk.toString();
 	});
 	req.on('end', async () => {
+		let queryStr = "SELECT id, english, dutch, pronunciationLink FROM vocabulary";
+		const params = [];
+		if(JSON.parse(body).category !== 'Review All') {
+			queryStr += " WHERE set_name = $1";
+			params.push(JSON.parse(body).category);
+		}
 
 		await pool.connect(async (err, client, release) => {
 			if(err) {
 				return console.error('Error acquiring client', err.stack)
 			}
-			client.query("SELECT id, english, dutch, pronunciationLink FROM vocabulary WHERE set_name = $1", [JSON.parse(body).category], async (err, result) => {
+			client.query(queryStr, params, async (err, result) => {
 				release();
 				if(err) {
 					return console.error('Error executing query', err.stack);
 				} else {
-					console.log(result.rows);
 					res.send(result.rows);
 				}
 			});

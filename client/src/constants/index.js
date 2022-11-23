@@ -9,6 +9,8 @@ export const HIDE_PREV_BTN_CSS = "vocab-card-hide-prev-btn";
 
 // CategoryList.js
 export const REVIEW_ENDPOINT_SETNAME_PARAM = "/review?" + SETNAME_QUERY_PARAM + "=";
+export const CHOOSE_CATEGORY_LABEL = "Choose a category";
+export const REVIEW_ALL_CATEGORY_LABEL = "Review All";
 
 // SlackDailyVocab.js
 export const GET_SLACK_INFO_ENDPOINT = "/getSlackInfo";
