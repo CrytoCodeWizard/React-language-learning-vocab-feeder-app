@@ -1,5 +1,6 @@
 // ReviewVocab.js
 export const SETNAME_QUERY_PARAM = "set_name";
+export const REVIEWTYPE_QUERY_PARAM = "review_type";
 export const GET_REVIEW_CATEGORIES_ENDPOINT = "/getReviewCategories";
 export const GET_VOCAB_FOR_CATEGORY_ENDPOINT = "/getVocabForCategory";
 export const SHOW_CARD_SIDE_CSS = "vocab-card-show-side";
@@ -9,6 +10,7 @@ export const HIDE_PREV_BTN_CSS = "vocab-card-hide-prev-btn";
 
 // CategoryList.js
 export const REVIEW_ENDPOINT_SETNAME_PARAM = "/review?" + SETNAME_QUERY_PARAM + "=";
+export const REVIEW_ENDPOINT_REVIEW_TYPE_PARAM = "/review?" + REVIEWTYPE_QUERY_PARAM + "=";
 export const CHOOSE_CATEGORY_LABEL = "Choose a category";
 export const REVIEW_ALL_CATEGORY_LABEL = "Review All";
 
@@ -24,6 +26,15 @@ export const SLACK_RECORD_MAX = 25;
 export const VOCAB_CARD_PREV_BUTTON_STR = "❮ Prev";
 export const VOCAB_CARD_NEXT_BUTTON_STR = "Next ❯";
 export const VOCAB_CARD_FLIP_BUTTON_STR = "Flip";
+
+export const VOCAB_CARD_ANSWER_PLACEHOLDER = "Enter your answer.";
+export const VOCAB_CARD_SUBMIT_BUTTON_STR = "Submit";
+export const VOCAB_CARD_ORIGINAL_BUTTON_CSS = "vocab-card-controls-btn vocab-card-controls-flip-btn";
+export const VOCAB_CARD_DISABLED_BUTTON_CSS = "vocab-card-controls-btn vocab-card-controls-disable-btn";
+export const VOCAB_CARD_REVIEWTYPE_PRACTICE_LABEL = "Practice";
+export const VOCAB_CARD_REVIEWTYPE_PRACTICE_STR = VOCAB_CARD_REVIEWTYPE_PRACTICE_LABEL.toLowerCase();
+export const VOCAB_CARD_REVIEWTYPE_TEST_LABEL = "Test";
+export const VOCAB_CARD_REVIEWTYPE_TEST_STR = VOCAB_CARD_REVIEWTYPE_TEST_LABEL.toLowerCase();
 
 // AWS
 export const S3_BUCKET_URL = "https://vocab-feeder.s3.eu-west-3.amazonaws.com/vocab-images/";

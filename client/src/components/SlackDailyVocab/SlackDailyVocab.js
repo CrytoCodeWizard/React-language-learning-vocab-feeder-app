@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./../../App.css";
+import "./../../Snackbar.css";
 import "./SlackDailyVocab.css";
-import "./Snackbar.css";
 
 import * as Constants from './../../constants';
 

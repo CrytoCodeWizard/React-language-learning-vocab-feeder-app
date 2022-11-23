@@ -3,6 +3,10 @@
   margin-top: 5vh;
 }
 
+.vocab-card-wrapper > h4 {
+  color: white;
+}
+
 .vocab-card {
   min-width: 350px;
   max-width: 350px;
@@ -43,18 +47,33 @@
   display: none;
 }
 
+.vocab-card-input > input {
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  width: 350px;
+}
+
 .vocab-card-controls {
   text-align: center;
 }
 
-.vocab-card-controls-flip-btn {
-  background-color: #fdc029;
+.vocab-card-controls-btn {
   font-size: 18px;
   border: none;
   padding: 16px 32px;
   margin-top: 12px;
   width: 350px;
   border-radius: 5px;
+}
+
+.vocab-card-controls-disable-btn {
+  background-color: darkgrey;
+  color: grey;
+}
+
+.vocab-card-controls-flip-btn {
+  background-color: #fdc029;
   color: black;
 }
 
