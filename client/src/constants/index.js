@@ -31,8 +31,10 @@ export const VOCAB_CARD_ANSWER_PLACEHOLDER = "Enter your answer.";
 export const VOCAB_CARD_SUBMIT_BUTTON_STR = "Submit";
 export const VOCAB_CARD_ORIGINAL_BUTTON_CSS = "vocab-card-controls-btn vocab-card-controls-flip-btn";
 export const VOCAB_CARD_DISABLED_BUTTON_CSS = "vocab-card-controls-btn vocab-card-controls-disable-btn";
-export const VOCAB_CARD_REVIEWTYPE_PRACTICE_STR = "practice";
-export const VOCAB_CARD_REVIEWTYPE_TEST_STR = "test";
+export const VOCAB_CARD_REVIEWTYPE_PRACTICE_LABEL = "Practice";
+export const VOCAB_CARD_REVIEWTYPE_PRACTICE_STR = VOCAB_CARD_REVIEWTYPE_PRACTICE_LABEL.toLowerCase();
+export const VOCAB_CARD_REVIEWTYPE_TEST_LABEL = "Test";
+export const VOCAB_CARD_REVIEWTYPE_TEST_STR = VOCAB_CARD_REVIEWTYPE_TEST_LABEL.toLowerCase();
 
 // AWS
 export const S3_BUCKET_URL = "https://vocab-feeder.s3.eu-west-3.amazonaws.com/vocab-images/";
