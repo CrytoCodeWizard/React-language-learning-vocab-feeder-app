@@ -6,7 +6,7 @@
 .vocab-card {
   min-width: 350px;
   max-width: 350px;
-  height: 200px;
+  min-height: 200px;
   text-align: center;
   background: #aa3d01;
   margin: 0 auto;
