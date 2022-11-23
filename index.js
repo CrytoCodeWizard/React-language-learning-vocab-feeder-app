@@ -106,7 +106,7 @@ function buildDutchBlockStr(data) {
 		if(data[entry].pronunciationlink === '#') {
 			pronunciationString = 'No URL found';
 		} else {
-			pronunciationString = '<"+data[entry].pronunciationlink+"|(Pronunciation)>';
+			pronunciationString = '<' + data[entry].pronunciationlink + '|(Pronunciation)>';
 		}
 		blockStr.push({
 			"type" : "section",
