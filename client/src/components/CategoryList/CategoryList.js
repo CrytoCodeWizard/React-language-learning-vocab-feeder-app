@@ -14,6 +14,7 @@ const CategoryList = (props) => {
               {Constants.REVIEW_ALL_CATEGORY_LABEL}
             </Link>
           </li>
+          <hr/>
           {props.categories.map((category) =>
             <li key={category}>
               <Link className="category-list-item" to={Constants.REVIEW_ENDPOINT_SETNAME_PARAM + category} onClick={props.GetRecordsForCategory}>

@@ -57,6 +57,12 @@ h1 {
   padding-bottom: 12px;
 }
 
+.ReviewApp > ul > hr {
+  width: 50%;
+  margin: 12px auto;
+  border: 2px solid #bcb6ae;
+}
+
 .category-list-item {
   color: #df861d;
   font-size: 28px;
