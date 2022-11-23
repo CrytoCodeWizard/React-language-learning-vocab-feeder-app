@@ -26,6 +26,8 @@ export const SLACK_RECORD_MAX = 25;
 export const VOCAB_CARD_PREV_BUTTON_STR = "❮ Prev";
 export const VOCAB_CARD_NEXT_BUTTON_STR = "Next ❯";
 export const VOCAB_CARD_FLIP_BUTTON_STR = "Flip";
+
+export const VOCAB_CARD_ANSWER_PLACEHOLDER = "Enter your answer.";
 export const VOCAB_CARD_SUBMIT_BUTTON_STR = "Submit";
 export const VOCAB_CARD_ORIGINAL_BUTTON_CSS = "vocab-card-controls-btn vocab-card-controls-flip-btn";
 export const VOCAB_CARD_DISABLED_BUTTON_CSS = "vocab-card-controls-btn vocab-card-controls-disable-btn";
