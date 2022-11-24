@@ -7,7 +7,6 @@ import * as Constants from "./../../constants";
 
 const VocabCard = (props) => {
   const [searchParams] = useSearchParams();
-  const [answer, setAnswer] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   if(!isLoaded && searchParams.get(Constants.REVIEWTYPE_QUERY_PARAM) === Constants.VOCAB_CARD_REVIEWTYPE_TEST_STR) {
@@ -26,11 +25,13 @@ const VocabCard = (props) => {
     props.setCSS({
       ...props.css,
       buttonCSS : Constants.VOCAB_CARD_DISABLED_BUTTON_CSS,
+      frontCSS : Constants.HIDE_CARD_SIDE_CSS,
+      backCSS : Constants.SHOW_CARD_SIDE_CSS,
       nextCSS: null
     });
     props.setTotalAttempted((props.totalAttempted)+1);
 
-    if(props.card.english.includes(answer)) {
+    if(props.card.english.toLowerCase().includes(props.answer.toLowerCase())) {
       props.setCorrectCount((props.correctCount)+1);
       props.showSnackbar(true);
     } else {
@@ -40,7 +41,7 @@ const VocabCard = (props) => {
 
   const HandleAnswerChange = (e) => {
     e.preventDefault();
-    setAnswer(e.target.value);
+    props.setAnswer(e.target.value);
   }
 
   if(searchParams.get(Constants.REVIEWTYPE_QUERY_PARAM) === Constants.VOCAB_CARD_REVIEWTYPE_PRACTICE_STR) {
@@ -86,7 +87,7 @@ const VocabCard = (props) => {
             </div>
           </div>
           <div className="vocab-card-input">
-              <input type="text" key={props.isDisabled} placeholder={Constants.VOCAB_CARD_ANSWER_PLACEHOLDER} onChange={HandleAnswerChange} required disabled={props.isDisabled}/>
+              <input type="text" key={props.isDisabled} placeholder={Constants.VOCAB_CARD_ANSWER_PLACEHOLDER} onChange={HandleAnswerChange} value={props.answer} required disabled={props.isDisabled}/>
           </div>
           <div className="vocab-card-controls">
             <div className="vocab-card-controls-flip">
