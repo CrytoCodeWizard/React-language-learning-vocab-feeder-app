@@ -24,6 +24,7 @@ const ReviewVocab = (props) => {
   const [totalAttempted, setTotalAttempted] = useState(0);
   const [isDisabled, setIsDisabled] = useState(false);
   const [answer, setAnswer] = useState(null);
+  const [categoryTotal, setCategoryTotal] = useState(0);
 
   const resetState = () => {
     setI(0);
@@ -54,6 +55,7 @@ const ReviewVocab = (props) => {
     .then((res) => res.json())
     .then((data) => {
       resetState();
+      setCategoryTotal(data.length);
       setRecords(shuffleArray(data));
       setIsLoaded(true);
     });
@@ -156,6 +158,7 @@ const ReviewVocab = (props) => {
         return (
           <div className="VocabApp">
             <h1>Category: {searchParams.get(Constants.SETNAME_QUERY_PARAM)}</h1>
+            <h3 className="category-card-total">{categoryTotal} cards</h3>
             <VocabCard 
               card={records[i]} 
               css={css}

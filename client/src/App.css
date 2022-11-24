@@ -45,6 +45,12 @@ h1 {
   color: white;
 }
 
+.category-card-total {
+  color: #df861d;
+  text-align: center;
+  margin: 0 auto;
+}
+
 .ReviewApp > ul {
   padding: 0px;
   margin: 0px;
