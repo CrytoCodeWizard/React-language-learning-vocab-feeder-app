@@ -23,6 +23,7 @@ const ReviewVocab = (props) => {
   const [correctCount, setCorrectCount] = useState(0);
   const [totalAttempted, setTotalAttempted] = useState(0);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [answer, setAnswer] = useState(null);
 
   const resetState = () => {
     setI(0);
@@ -74,6 +75,7 @@ const ReviewVocab = (props) => {
 
       ResetSnackbar();
 
+      setAnswer(null);
       setIsDisabled(false);
     } else {
       const nextStyle = (i === records.length-2) ? Constants.HIDE_NEXT_BTN_CSS : null;
@@ -160,6 +162,7 @@ const ReviewVocab = (props) => {
               correctCount={correctCount} 
               isDisabled={isDisabled} 
               totalAttempted={totalAttempted}
+              answer={answer}
               GetPrevCard={GetPrevCard} 
               GetNextCard={GetNextCard} 
               FlipCard={FlipCard} 
@@ -167,7 +170,8 @@ const ReviewVocab = (props) => {
               setCorrectCount={setCorrectCount} 
               setIsDisabled={setIsDisabled} 
               showSnackbar={ShowSnackbar}
-              setTotalAttempted={setTotalAttempted} />
+              setTotalAttempted={setTotalAttempted}
+              setAnswer={setAnswer} />
           </div>
         );
       }
