@@ -1,0 +1,13 @@
+.LessonNotes {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.lesson-notes-contents {
+    border: 2px solid #bcb6ae;
+}
+
+.lesson-notes-contents {
+    padding: 12px;
+    color: white;
+}

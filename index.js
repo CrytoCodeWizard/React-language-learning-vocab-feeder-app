@@ -148,6 +148,33 @@ app.get("/getReviewCategories", async (req, res) => {
 	});
 });
 
+app.get("/getLessonPeopleNames", async (req, res) => {
+	await pool.connect(async (err, client, release) => {
+		if(err) {
+			return console.error('Error acquiring client', err.stack)
+		}
+		client.query("SELECT person, TO_CHAR(lesson_date, 'YYYY-MM-DD') as lesson_date, notes, lesson_title FROM lesson", async (err, result) => {
+			release();
+			if(err) {
+				return console.error('Error executing query', err.stack);
+			} else {
+				const lessons = {};
+				for(let row in result.rows) {
+					let capitalizedName = result.rows[row].person.charAt(0).toUpperCase() + result.rows[row].person.slice(1);
+
+					if(Object.keys(lessons).includes(capitalizedName)) {
+						lessons[capitalizedName].push(result.rows[row]);
+					} else {
+						lessons[capitalizedName] = [result.rows[row]];
+					}
+				}
+
+				res.send(lessons);
+			}
+		});
+	});
+});
+
 app.post("/sendSlack", async (req, res) => {
 	resetVocabRecordsToUnseen(); // TODO: REMOVE AFTER ACTIVE DEV IS DONE
 	let body = "";
