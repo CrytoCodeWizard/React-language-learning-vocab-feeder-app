@@ -153,7 +153,7 @@ app.get("/getLessonPeopleNames", async (req, res) => {
 		if(err) {
 			return console.error('Error acquiring client', err.stack)
 		}
-		client.query("SELECT person, TO_CHAR(lesson_date, 'YYYY-MM-DD') as lesson_date, notes FROM lesson", async (err, result) => {
+		client.query("SELECT person, TO_CHAR(lesson_date, 'YYYY-MM-DD') as lesson_date, notes, lesson_title FROM lesson", async (err, result) => {
 			release();
 			if(err) {
 				return console.error('Error executing query', err.stack);
