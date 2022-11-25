@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams } from 'react-router-dom';
 
 import * as Constants from "../../constants";
+import LessonNotes from "../LessonNotes/LessonNotes";
 
 const ReviewLessonNotes = (props) => {
     const [lessons, setLessons] = useState({});
@@ -17,11 +18,19 @@ const ReviewLessonNotes = (props) => {
         });
     },[]);
 
+    const GetNotes = () => {
+      const PERSON = searchParams.get(Constants.PERSON_QUERY_PARAM);
+      for(let i in lessons[PERSON]) {
+        if(lessons[PERSON][i].lesson_date === searchParams.get(Constants.LESSONDATE_QUERY_PARAM)) {
+          return lessons[PERSON][i];
+        }
+      }
+    };
+
     if(searchParams.get(Constants.PERSON_QUERY_PARAM) && searchParams.get(Constants.LESSONDATE_QUERY_PARAM)) {
       return (
         <div className="ReviewApp">
-          <h1>{Constants.LESSON_NOTES_TITLE}</h1>
-          <h2>{searchParams.get(Constants.LESSONDATE_QUERY_PARAM)}</h2>
+          <LessonNotes GetNotes={GetNotes}/>
         </div>
       );
     } else if(searchParams.get(Constants.PERSON_QUERY_PARAM)) {
