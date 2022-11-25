@@ -69,6 +69,9 @@ export const VOCAB_CARD_REVIEWTYPE_TEST_STR = VOCAB_CARD_REVIEWTYPE_TEST_LABEL.t
 // ReviewLessonNotes.js
 export const LESSON_NOTES_TITLE = "Lesson Notes";
 export const GET_LESSON_PEOPLE_NAMES_ENDPOINT = "/getLessonPeopleNames";
+export const PERSON_QUERY_PARAM = "person";
+export const LESSONDATE_QUERY_PARAM = "lessondate";
+export const LESSON_ENDPOINT_PERSON_PARAM = "/lessons?" + PERSON_QUERY_PARAM + "=";
 
 // AWS
 export const S3_BUCKET_URL = "https://vocab-feeder.s3.eu-west-3.amazonaws.com/vocab-images/";
