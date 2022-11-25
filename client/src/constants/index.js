@@ -72,17 +72,17 @@ export const ROUTES = [
     },
     {
         route: SLACK_ENDPOINT,
-        linkLabel: "Slack App",
+        linkLabel: "Slack",
         element: <SlackDailyVocab/>
     },
     {
         route: REVIEW_ENDPOINT,
-        linkLabel: "Flash Cards",
+        linkLabel: "Review",
         element: <ReviewVocab/>
     },
     {
         route: LESSONS_ENDPOINT,
-        linkLabel: "Lesson Notes",
+        linkLabel: "Notes",
         element: <ReviewLessonNotes/>
     }
 ];
