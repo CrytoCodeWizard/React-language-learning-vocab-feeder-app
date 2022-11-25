@@ -20,7 +20,7 @@ class App extends React.Component {
 							<nav>
 								<ul>
 									{Constants.ROUTES.map((link) =>
-										<li key={link}>
+										<li key={link.linkLabel}>
 											<Link to={link.route} className="navAnchor">{link.linkLabel}</Link>
 										</li>
 									)}
@@ -30,7 +30,7 @@ class App extends React.Component {
 					</header>
 					<Routes>
 						{Constants.ROUTES.map((route) =>
-							<Route exact path={route.route} element={route.element}/>
+							<Route key={route.element} exact path={route.route} element={route.element}/>
 						)}
 					</Routes>
 				</BrowserRouter>
