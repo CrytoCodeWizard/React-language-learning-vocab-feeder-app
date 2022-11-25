@@ -1,6 +1,7 @@
 import SlackDailyVocab from "../components/SlackDailyVocab/SlackDailyVocab";
 import ReviewVocab from "../components/ReviewVocab/ReviewVocab";
 import Home from "../components/Home/Home";
+import ReviewLessonNotes from "../components/ReviewLessonNotes/ReviewLessonNotes";
 
 // App.js
 export const APP_HEADER_TITLE = "De Nederlandse App";
@@ -19,6 +20,11 @@ export const ROUTES = [
         route: "/review",
         linkLabel: "Flash Cards",
         element: <ReviewVocab/>
+    },
+    {
+        route: "/lessons",
+        linkLabel: "Lesson Notes",
+        element: <ReviewLessonNotes/>
     }
 ];
 
@@ -59,6 +65,10 @@ export const VOCAB_CARD_REVIEWTYPE_PRACTICE_LABEL = "Practice";
 export const VOCAB_CARD_REVIEWTYPE_PRACTICE_STR = VOCAB_CARD_REVIEWTYPE_PRACTICE_LABEL.toLowerCase();
 export const VOCAB_CARD_REVIEWTYPE_TEST_LABEL = "Test";
 export const VOCAB_CARD_REVIEWTYPE_TEST_STR = VOCAB_CARD_REVIEWTYPE_TEST_LABEL.toLowerCase();
+
+// ReviewLessonNotes.js
+export const LESSON_NOTES_TITLE = "Lesson Notes";
+export const GET_LESSON_PEOPLE_NAMES_ENDPOINT = "/getLessonPeopleNames";
 
 // AWS
 export const S3_BUCKET_URL = "https://vocab-feeder.s3.eu-west-3.amazonaws.com/vocab-images/";
