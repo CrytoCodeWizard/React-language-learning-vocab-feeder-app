@@ -153,17 +153,23 @@ app.get("/getLessonPeopleNames", async (req, res) => {
 		if(err) {
 			return console.error('Error acquiring client', err.stack)
 		}
-		client.query("SELECT DISTINCT person FROM lesson", async (err, result) => {
+		client.query("SELECT person, TO_CHAR(lesson_date, 'YYYY-MM-DD') as lesson_date, notes FROM lesson", async (err, result) => {
 			release();
 			if(err) {
 				return console.error('Error executing query', err.stack);
 			} else {
-				const peopleNames = [];
+				const lessons = {};
 				for(let row in result.rows) {
-					peopleNames.push(result.rows[row].person.charAt(0).toUpperCase() + result.rows[row].person.slice(1));
+					let capitalizedName = result.rows[row].person.charAt(0).toUpperCase() + result.rows[row].person.slice(1);
+
+					if(Object.keys(lessons).includes(capitalizedName)) {
+						lessons[capitalizedName].push(result.rows[row]);
+					} else {
+						lessons[capitalizedName] = [result.rows[row]];
+					}
 				}
 
-				res.send(peopleNames);
+				res.send(lessons);
 			}
 		});
 	});
