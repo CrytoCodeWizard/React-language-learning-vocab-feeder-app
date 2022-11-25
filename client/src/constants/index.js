@@ -1,3 +1,27 @@
+import SlackDailyVocab from "../components/SlackDailyVocab/SlackDailyVocab";
+import ReviewVocab from "../components/ReviewVocab/ReviewVocab";
+import Home from "../components/Home/Home";
+
+// App.js
+export const APP_HEADER_TITLE = "De Nederlandse App";
+export const ROUTES = [
+    {   
+        route: "/",
+        linkLabel: "Home",
+        element: <Home/>
+    },
+    {
+        route: "/slack",
+        linkLabel: "Slack App",
+        element: <SlackDailyVocab/>
+    },
+    {
+        route: "/review",
+        linkLabel: "Flash Cards",
+        element: <ReviewVocab/>
+    }
+];
+
 // ReviewVocab.js
 export const SETNAME_QUERY_PARAM = "set_name";
 export const REVIEWTYPE_QUERY_PARAM = "review_type";
