@@ -2,14 +2,21 @@ require('dotenv').config();
 const schedule = require('node-schedule');
 const { Pool } = require('pg');
 const { WebClient } = require('@slack/web-api');
+const { parse } = require('qs');
 
 const express = require("express");
 const PORT = process.env.NODE_PORT || 3001;
 const app = express();
 
+const slackVars = require('./slack-vars');
+const { 
+	DEFAULT_VOCAB_BATCH_COUNT, 
+	SEND_DAILY_SLACK_BTN_LABEL, 
+	QUERY_EXECUTION_ERROR_MSG, 
+	QUERY_CONNECTION_ERROR_MSG 
+} = require('./constants');
+
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
-const DEFAULT_VOCAB_BATCH_COUNT = 3;
-const SEND_DAILY_SLACK_BTN_LABEL = 'Send Daily Dutch Vocab';
 
 schedule.scheduleJob('30 07 * * *', function(){
 	sendDailyDutchVocabToSlack(DEFAULT_VOCAB_BATCH_COUNT);
@@ -28,15 +35,15 @@ const pool = new Pool({
 const getVocabularyRecords = async function(recordCount) {
 	pool.connect((err, client, release) => {
 		if(err) {
-			return console.error('Error acquiring client', err.stack)
+			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 		client.query('SELECT id, dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1', [recordCount], (err, result) => {
 			release();
 			if(err) {
-				return console.error('Error executing query', err.stack);
+				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			} else {
+				slackVars.data = result.rows;
 				postSlackMessage(result.rows);
-				updateVocabRecordsAsSeen(result.rows);
 			}
 		});
 	});
@@ -46,35 +53,34 @@ const sendDailyDutchVocabToSlack = async function(recordCount) {
 	await getVocabularyRecords(recordCount);
 }
 
-const updateVocabRecordsAsSeen = async function(data) {
-	const vocabIds = [];
-	for(let entry in data) {
-		vocabIds.push(data[entry].id);
-	}
+const updateVocabRecordsAsSeen = async function(field, vocabId) {
 	pool.connect((err, client, release) => {
 		if(err) {
-			return console.error('Error acquiring client', err.stack)
+			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
-		client.query('UPDATE vocabulary SET seen = TRUE WHERE id = ANY($1)', [vocabIds], (err, result) => {
+
+		let queryStr = 'UPDATE vocabulary SET ' + field + ' = TRUE WHERE id = ANY($1)';
+		client.query(queryStr, [[vocabId]], (err, result) => {
 			release();
 			if(err) {
-				return console.error('Error executing query', err.stack);
+				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			}
 		});
 	});
 }
 
-function resetVocabRecordsToUnseen() {
+function resetVocabRecordsToUnseen(field) {
 	pool.connect((err, client, release) => {
 		if(err) {
-			return console.error('Error acquiring client', err.stack)
+			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
-		client.query('UPDATE vocabulary SET seen = FALSE', (err, result) => {
+
+		let queryStr = 'UPDATE vocabulary SET ' + field + ' = FALSE';
+		client.query(queryStr, (err, result) => {
 			release();
 			if(err) {
-				return console.error('Error executing query', err.stack);
+				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			}
-			console.log('done!');
 		});
 	});
 }
@@ -90,7 +96,55 @@ function postSlackMessage(data) {
 }
 
 function buildDutchBlockStr(data) {
-	const blockStr = [
+	const blockStr = initBlockStrWithDailyMessageHeaderTitle();
+	
+	for(let entry in data) {
+		blockStr.push({
+			"type" : "section",
+			"fields" : [{
+				"type": "mrkdwn",
+				"text" : "*Dutch:*\n"+data[entry].dutch+" - "+ buildPronunciationString(data[entry].pronunciationlink)
+			},
+			{
+				"type": "mrkdwn",
+				"text": "*English:*\n"+data[entry].english
+			}]
+		});
+		blockStr.push({
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Mark as Seen",
+						"emoji": true
+					},
+					"value": slackVars.seenString,
+					"action_id": "actionId-" + data[entry].id + '-1' 
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Mark as Mastered",
+						"emoji": true
+					},
+					"value": slackVars.masteredString,
+					"action_id": "actionId-" + data[entry].id + '-2'
+				}
+			]
+		});
+	}
+	return JSON.stringify(blockStr);
+}
+
+function buildPronunciationString(pronunciationlink) {
+	return pronunciationlink === '#' ? 'No URL found' : ('<' + pronunciationlink + '|(Pronunciation)>');
+}
+
+function initBlockStrWithDailyMessageHeaderTitle() {
+	return [
 		{
 			"type" : "header",
 			"text": {
@@ -100,25 +154,76 @@ function buildDutchBlockStr(data) {
 			}
 		}
 	];
-	
-	for(let entry in data) {
-		let pronunciationString = '';
-		if(data[entry].pronunciationlink === '#') {
-			pronunciationString = 'No URL found';
+}
+
+function updateIdActionList(actionValue, rowIdOfAction) {
+	updateVocabRecordsAsSeen(actionValue, rowIdOfAction);
+	if(actionValue === slackVars.masteredString) {
+		slackVars.masteredIds.push(rowIdOfAction);
+	} else if(actionValue === slackVars.seenString) {
+		slackVars.seenIds.push(rowIdOfAction);
+	}
+}
+
+function getRowIdFromSlackAction(payloadActionId) {
+	return parseInt(payloadActionId.split('-')[1]);
+}
+
+function buildUpdatedDutchBlockStr(payloadAction) {
+	const rowIdOfAction = getRowIdFromSlackAction(payloadAction.action_id);
+	updateIdActionList(payloadAction.value, rowIdOfAction);
+
+	const blockStr = initBlockStrWithDailyMessageHeaderTitle();
+	const data = slackVars.data;
+	for(let entryIndex in data) {
+		if(!slackVars.masteredIds.includes(data[entryIndex].id) && !slackVars.seenIds.includes(data[entryIndex].id) && rowIdOfAction !== data[entryIndex].id) {
+			blockStr.push({
+				"type" : "section",
+				"fields" : [{
+					"type": "mrkdwn",
+					"text" : "*Dutch:*\n"+data[entryIndex].dutch+" - "+ buildPronunciationString(data[entryIndex].pronunciationlink)
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*English:*\n"+data[entryIndex].english
+				}]
+			});
+
+			blockStr.push({
+				"type": "actions",
+				"elements": [
+					{
+						"type": "button",
+						"text": {
+							"type": "plain_text",
+							"text": "Mark as Seen",
+							"emoji": true
+						},
+						"value": slackVars.seenString,
+						"action_id": "actionId-" + data[entryIndex].id + '-1'
+					},
+					{
+						"type": "button",
+						"text": {
+							"type": "plain_text",
+							"text": "Mark as Mastered",
+							"emoji": true
+						},
+						"value": slackVars.masteredString,
+						"action_id": "actionId-" + data[entryIndex].id + '-2'
+					}
+				]
+			});
 		} else {
-			pronunciationString = '<' + data[entry].pronunciationlink + '|(Pronunciation)>';
+			let actionStr = slackVars.masteredIds.includes(data[entryIndex].id) ? 'mastered' : 'seen';
+			blockStr.push({
+				"type" : "section",
+				"fields" : [{
+					"type": "mrkdwn",
+					"text" : "*Dutch:*\n"+data[entryIndex].dutch+" - marked as " + actionStr
+				}]
+			});
 		}
-		blockStr.push({
-			"type" : "section",
-			"fields" : [{
-				"type": "mrkdwn",
-				"text" : "*Dutch:*\n"+data[entry].dutch+" - "+ pronunciationString
-			},
-			{
-				"type": "mrkdwn",
-				"text": "*English:*\n"+data[entry].english
-			}]
-		});
 	}
 	return JSON.stringify(blockStr);
 }
@@ -130,12 +235,12 @@ app.get("/getSlackInfo", (req, res) => {
 app.get("/getReviewCategories", async (req, res) => {
 	await pool.connect(async (err, client, release) => {
 		if(err) {
-			return console.error('Error acquiring client', err.stack)
+			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 		client.query("SELECT name FROM category WHERE name != '' ORDER BY category_order ASC", async (err, result) => {
 			release();
 			if(err) {
-				return console.error('Error executing query', err.stack);
+				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			} else {
 				let setNames = [];
 				for(let row in result.rows) {
@@ -151,12 +256,12 @@ app.get("/getReviewCategories", async (req, res) => {
 app.get("/getLessonPeopleNames", async (req, res) => {
 	await pool.connect(async (err, client, release) => {
 		if(err) {
-			return console.error('Error acquiring client', err.stack)
+			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 		client.query("SELECT person, TO_CHAR(lesson_date, 'YYYY-MM-DD') as lesson_date, notes, lesson_title FROM lesson", async (err, result) => {
 			release();
 			if(err) {
-				return console.error('Error executing query', err.stack);
+				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			} else {
 				const lessons = {};
 				for(let row in result.rows) {
@@ -175,8 +280,33 @@ app.get("/getLessonPeopleNames", async (req, res) => {
 	});
 });
 
+app.post("/api/vocab", async (req, res) => {
+	let body = "";
+
+	req.on('data', chunk => {
+		body += chunk.toString();
+	});
+	
+	req.on('end', () => {
+		const payload = JSON.parse(
+			parse(decodeURIComponent(body)).payload
+		);
+
+		(async () => {
+			const result = await web.chat.update({
+				blocks: buildUpdatedDutchBlockStr(payload.actions[0]),
+				channel: process.env.SLACK_CHANNEL_CONVERSATION_ID,
+				text: "You have marked a vocab record as seen or mastered.",
+				ts: payload.message.ts
+			});
+		})();
+
+		res.end('ok');
+	});
+});
+
 app.post("/sendSlack", async (req, res) => {
-	resetVocabRecordsToUnseen(); // TODO: REMOVE AFTER ACTIVE DEV IS DONE
+	// resetVocabRecordsToUnseen(); // TODO: REMOVE AFTER ACTIVE DEV IS DONE
 	let body = "";
 	req.on('data', chunk => {
 		body += chunk.toString();
@@ -202,12 +332,12 @@ app.post("/getVocabForCategory", async (req, res) => {
 
 		await pool.connect(async (err, client, release) => {
 			if(err) {
-				return console.error('Error acquiring client', err.stack)
+				return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 			}
 			client.query(queryStr, params, async (err, result) => {
 				release();
 				if(err) {
-					return console.error('Error executing query', err.stack);
+					return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 				} else {
 					res.send(result.rows);
 				}
