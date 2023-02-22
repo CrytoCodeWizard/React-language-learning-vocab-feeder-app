@@ -9,10 +9,9 @@ const PORT = process.env.NODE_PORT || 3001;
 const app = express();
 
 const slackVars = require('./slack-vars');
+const { DEFAULT_VOCAB_BATCH_COUNT, SEND_DAILY_SLACK_BTN_LABEL } = require('./constants');
 
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
-const DEFAULT_VOCAB_BATCH_COUNT = 3;
-const SEND_DAILY_SLACK_BTN_LABEL = 'Send Daily Dutch Vocab';
 
 schedule.scheduleJob('30 07 * * *', function(){
 	sendDailyDutchVocabToSlack(DEFAULT_VOCAB_BATCH_COUNT);
