@@ -7,7 +7,8 @@ const { parse } = require('qs');
 const express = require("express");
 const PORT = process.env.NODE_PORT || 3001;
 const app = express();
-let slackVars = require('./slack-vars');
+
+const slackVars = require('./slack-vars');
 
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 const DEFAULT_VOCAB_BATCH_COUNT = 3;
