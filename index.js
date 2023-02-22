@@ -9,7 +9,7 @@ const PORT = process.env.NODE_PORT || 3001;
 const app = express();
 
 const slackVars = require('./slack-vars');
-const { DEFAULT_VOCAB_BATCH_COUNT, SEND_DAILY_SLACK_BTN_LABEL } = require('./constants');
+const { DEFAULT_VOCAB_BATCH_COUNT, SEND_DAILY_SLACK_BTN_LABEL, QUERY_EXECUTION_ERROR_MSG } = require('./constants');
 
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 
@@ -35,7 +35,7 @@ const getVocabularyRecords = async function(recordCount) {
 		client.query('SELECT id, dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1', [recordCount], (err, result) => {
 			release();
 			if(err) {
-				return console.error('Error executing query', err.stack);
+				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			} else {
 				slackVars.data = result.rows;
 				postSlackMessage(result.rows);
@@ -61,7 +61,7 @@ const updateVocabRecordsAsSeen = async function(data) {
 		client.query('UPDATE vocabulary SET seen = TRUE WHERE id = ANY($1)', [vocabIds], (err, result) => {
 			release();
 			if(err) {
-				return console.error('Error executing query', err.stack);
+				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			}
 		});
 	});
@@ -75,7 +75,7 @@ function resetVocabRecordsToUnseen() {
 		client.query('UPDATE vocabulary SET seen = FALSE', (err, result) => {
 			release();
 			if(err) {
-				return console.error('Error executing query', err.stack);
+				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			}
 		});
 	});
@@ -250,7 +250,7 @@ app.get("/getReviewCategories", async (req, res) => {
 		client.query("SELECT name FROM category WHERE name != '' ORDER BY category_order ASC", async (err, result) => {
 			release();
 			if(err) {
-				return console.error('Error executing query', err.stack);
+				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			} else {
 				let setNames = [];
 				for(let row in result.rows) {
@@ -271,7 +271,7 @@ app.get("/getLessonPeopleNames", async (req, res) => {
 		client.query("SELECT person, TO_CHAR(lesson_date, 'YYYY-MM-DD') as lesson_date, notes, lesson_title FROM lesson", async (err, result) => {
 			release();
 			if(err) {
-				return console.error('Error executing query', err.stack);
+				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			} else {
 				const lessons = {};
 				for(let row in result.rows) {
@@ -347,7 +347,7 @@ app.post("/getVocabForCategory", async (req, res) => {
 			client.query(queryStr, params, async (err, result) => {
 				release();
 				if(err) {
-					return console.error('Error executing query', err.stack);
+					return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 				} else {
 					res.send(result.rows);
 				}
