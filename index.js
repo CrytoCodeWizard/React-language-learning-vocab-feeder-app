@@ -44,7 +44,6 @@ const getVocabularyRecords = async function(recordCount) {
 			} else {
 				slackVars.data = result.rows;
 				postSlackMessage(result.rows);
-				updateVocabRecordsAsSeen(result.rows);
 			}
 		});
 	});
@@ -54,16 +53,14 @@ const sendDailyDutchVocabToSlack = async function(recordCount) {
 	await getVocabularyRecords(recordCount);
 }
 
-const updateVocabRecordsAsSeen = async function(data) {
-	const vocabIds = [];
-	for(let entry in data) {
-		vocabIds.push(data[entry].id);
-	}
+const updateVocabRecordsAsSeen = async function(field, vocabId) {
 	pool.connect((err, client, release) => {
 		if(err) {
 			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
-		client.query('UPDATE vocabulary SET seen = TRUE WHERE id = ANY($1)', [vocabIds], (err, result) => {
+
+		let queryStr = 'UPDATE vocabulary SET ' + field + ' = TRUE WHERE id = ANY($1)';
+		client.query(queryStr, [[vocabId]], (err, result) => {
 			release();
 			if(err) {
 				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
@@ -72,12 +69,14 @@ const updateVocabRecordsAsSeen = async function(data) {
 	});
 }
 
-function resetVocabRecordsToUnseen() {
+function resetVocabRecordsToUnseen(field) {
 	pool.connect((err, client, release) => {
 		if(err) {
 			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
-		client.query('UPDATE vocabulary SET seen = FALSE', (err, result) => {
+
+		let queryStr = 'UPDATE vocabulary SET ' + field + ' = FALSE';
+		client.query(queryStr, (err, result) => {
 			release();
 			if(err) {
 				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
@@ -158,6 +157,7 @@ function initBlockStrWithDailyMessageHeaderTitle() {
 }
 
 function updateIdActionList(actionValue, rowIdOfAction) {
+	updateVocabRecordsAsSeen(actionValue, rowIdOfAction);
 	if(actionValue === slackVars.masteredString) {
 		slackVars.masteredIds.push(rowIdOfAction);
 	} else if(actionValue === slackVars.seenString) {
@@ -306,7 +306,7 @@ app.post("/api/vocab", async (req, res) => {
 });
 
 app.post("/sendSlack", async (req, res) => {
-	resetVocabRecordsToUnseen(); // TODO: REMOVE AFTER ACTIVE DEV IS DONE
+	// resetVocabRecordsToUnseen(); // TODO: REMOVE AFTER ACTIVE DEV IS DONE
 	let body = "";
 	req.on('data', chunk => {
 		body += chunk.toString();
