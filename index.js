@@ -2,10 +2,12 @@ require('dotenv').config();
 const schedule = require('node-schedule');
 const { Pool } = require('pg');
 const { WebClient } = require('@slack/web-api');
+const { parse } = require('qs');
 
 const express = require("express");
 const PORT = process.env.NODE_PORT || 3001;
 const app = express();
+let slackVars = require('./slack-vars');
 
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 const DEFAULT_VOCAB_BATCH_COUNT = 3;
@@ -35,6 +37,7 @@ const getVocabularyRecords = async function(recordCount) {
 			if(err) {
 				return console.error('Error executing query', err.stack);
 			} else {
+				slackVars.data = result.rows;
 				postSlackMessage(result.rows);
 				updateVocabRecordsAsSeen(result.rows);
 			}
@@ -74,7 +77,6 @@ function resetVocabRecordsToUnseen() {
 			if(err) {
 				return console.error('Error executing query', err.stack);
 			}
-			console.log('done!');
 		});
 	});
 }
@@ -119,6 +121,119 @@ function buildDutchBlockStr(data) {
 				"text": "*English:*\n"+data[entry].english
 			}]
 		});
+		blockStr.push({
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Mark as Seen",
+						"emoji": true
+					},
+					"value": slackVars.seenString,
+					"action_id": "actionId-" + data[entry].id + '-1' 
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Mark as Mastered",
+						"emoji": true
+					},
+					"value": slackVars.masteredString,
+					"action_id": "actionId-" + data[entry].id + '-2'
+				}
+			]
+		});
+	}
+	return JSON.stringify(blockStr);
+}
+
+function buildPronunciationString(pronunciationlink) {
+	return pronunciationlink === '#' ? 'No URL found' : ('<' + pronunciationlink + '|(Pronunciation)>');
+}
+
+function initBlockStrWithDailyMessageHeaderTitle() {
+	return [
+		{
+			"type" : "header",
+			"text": {
+				"type": "plain_text",
+				"emoji" : false,
+				"text" : "Words for " + new Date().toLocaleString('en-US', { dateStyle: 'long' })
+			}
+		}
+	];
+}
+
+function updateIdActionList(actionValue, rowIdOfAction) {
+	if(actionValue === slackVars.masteredString) {
+		slackVars.masteredIds.push(rowIdOfAction);
+	} else if(actionValue === slackVars.seenString) {
+		slackVars.seenIds.push(rowIdOfAction);
+	}
+}
+
+function getRowIdFromSlackAction(payloadActionId) {
+	return parseInt(payloadActionId.split('-')[1]);
+}
+
+function buildUpdatedDutchBlockStr(payloadAction) {
+	const rowIdOfAction = getRowIdFromSlackAction(payloadAction.action_id);
+	updateIdActionList(payloadAction.value, rowIdOfAction);
+
+	const blockStr = initBlockStrWithDailyMessageHeaderTitle();
+	const data = slackVars.data;
+	for(let entryIndex in data) {
+		if(!slackVars.masteredIds.includes(data[entryIndex].id) && !slackVars.seenIds.includes(data[entryIndex].id) && rowIdOfAction !== data[entryIndex].id) {
+			blockStr.push({
+				"type" : "section",
+				"fields" : [{
+					"type": "mrkdwn",
+					"text" : "*Dutch:*\n"+data[entryIndex].dutch+" - "+ buildPronunciationString(data[entryIndex].pronunciationlink)
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*English:*\n"+data[entryIndex].english
+				}]
+			});
+
+			blockStr.push({
+				"type": "actions",
+				"elements": [
+					{
+						"type": "button",
+						"text": {
+							"type": "plain_text",
+							"text": "Mark as Seen",
+							"emoji": true
+						},
+						"value": slackVars.seenString,
+						"action_id": "actionId-" + data[entryIndex].id + '-1'
+					},
+					{
+						"type": "button",
+						"text": {
+							"type": "plain_text",
+							"text": "Mark as Mastered",
+							"emoji": true
+						},
+						"value": slackVars.masteredString,
+						"action_id": "actionId-" + data[entryIndex].id + '-2'
+					}
+				]
+			});
+		} else {
+			let actionStr = slackVars.masteredIds.includes(data[entryIndex].id) ? 'mastered' : 'seen';
+			blockStr.push({
+				"type" : "section",
+				"fields" : [{
+					"type": "mrkdwn",
+					"text" : "*Dutch:*\n"+data[entryIndex].dutch+" - marked as " + actionStr
+				}]
+			});
+		}
 	}
 	return JSON.stringify(blockStr);
 }
@@ -172,6 +287,31 @@ app.get("/getLessonPeopleNames", async (req, res) => {
 				res.send(lessons);
 			}
 		});
+	});
+});
+
+app.post("/api/vocab", async (req, res) => {
+	let body = "";
+
+	req.on('data', chunk => {
+		body += chunk.toString();
+	});
+	
+	req.on('end', () => {
+		const payload = JSON.parse(
+			parse(decodeURIComponent(body)).payload
+		);
+
+		(async () => {
+			const result = await web.chat.update({
+				blocks: buildUpdatedDutchBlockStr(payload.actions[0]),
+				channel: process.env.SLACK_CHANNEL_CONVERSATION_ID,
+				text: "You have marked a vocab record as seen or mastered.",
+				ts: payload.message.ts
+			});
+		})();
+
+		res.end('ok');
 	});
 });
 
