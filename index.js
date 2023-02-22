@@ -9,7 +9,12 @@ const PORT = process.env.NODE_PORT || 3001;
 const app = express();
 
 const slackVars = require('./slack-vars');
-const { DEFAULT_VOCAB_BATCH_COUNT, SEND_DAILY_SLACK_BTN_LABEL, QUERY_EXECUTION_ERROR_MSG } = require('./constants');
+const { 
+	DEFAULT_VOCAB_BATCH_COUNT, 
+	SEND_DAILY_SLACK_BTN_LABEL, 
+	QUERY_EXECUTION_ERROR_MSG, 
+	QUERY_CONNECTION_ERROR_MSG 
+} = require('./constants');
 
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 
@@ -30,7 +35,7 @@ const pool = new Pool({
 const getVocabularyRecords = async function(recordCount) {
 	pool.connect((err, client, release) => {
 		if(err) {
-			return console.error('Error acquiring client', err.stack)
+			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 		client.query('SELECT id, dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1', [recordCount], (err, result) => {
 			release();
@@ -56,7 +61,7 @@ const updateVocabRecordsAsSeen = async function(data) {
 	}
 	pool.connect((err, client, release) => {
 		if(err) {
-			return console.error('Error acquiring client', err.stack)
+			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 		client.query('UPDATE vocabulary SET seen = TRUE WHERE id = ANY($1)', [vocabIds], (err, result) => {
 			release();
@@ -70,7 +75,7 @@ const updateVocabRecordsAsSeen = async function(data) {
 function resetVocabRecordsToUnseen() {
 	pool.connect((err, client, release) => {
 		if(err) {
-			return console.error('Error acquiring client', err.stack)
+			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 		client.query('UPDATE vocabulary SET seen = FALSE', (err, result) => {
 			release();
@@ -92,29 +97,14 @@ function postSlackMessage(data) {
 }
 
 function buildDutchBlockStr(data) {
-	const blockStr = [
-		{
-			"type" : "header",
-			"text": {
-				"type": "plain_text",
-				"emoji" : false,
-				"text" : "Words for " + new Date().toLocaleString('en-US', { dateStyle: 'long' })
-			}
-		}
-	];
+	const blockStr = initBlockStrWithDailyMessageHeaderTitle();
 	
 	for(let entry in data) {
-		let pronunciationString = '';
-		if(data[entry].pronunciationlink === '#') {
-			pronunciationString = 'No URL found';
-		} else {
-			pronunciationString = '<' + data[entry].pronunciationlink + '|(Pronunciation)>';
-		}
 		blockStr.push({
 			"type" : "section",
 			"fields" : [{
 				"type": "mrkdwn",
-				"text" : "*Dutch:*\n"+data[entry].dutch+" - "+ pronunciationString
+				"text" : "*Dutch:*\n"+data[entry].dutch+" - "+ buildPronunciationString(data[entry].pronunciationlink)
 			},
 			{
 				"type": "mrkdwn",
@@ -245,7 +235,7 @@ app.get("/getSlackInfo", (req, res) => {
 app.get("/getReviewCategories", async (req, res) => {
 	await pool.connect(async (err, client, release) => {
 		if(err) {
-			return console.error('Error acquiring client', err.stack)
+			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 		client.query("SELECT name FROM category WHERE name != '' ORDER BY category_order ASC", async (err, result) => {
 			release();
@@ -266,7 +256,7 @@ app.get("/getReviewCategories", async (req, res) => {
 app.get("/getLessonPeopleNames", async (req, res) => {
 	await pool.connect(async (err, client, release) => {
 		if(err) {
-			return console.error('Error acquiring client', err.stack)
+			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 		client.query("SELECT person, TO_CHAR(lesson_date, 'YYYY-MM-DD') as lesson_date, notes, lesson_title FROM lesson", async (err, result) => {
 			release();
@@ -342,7 +332,7 @@ app.post("/getVocabForCategory", async (req, res) => {
 
 		await pool.connect(async (err, client, release) => {
 			if(err) {
-				return console.error('Error acquiring client', err.stack)
+				return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 			}
 			client.query(queryStr, params, async (err, result) => {
 				release();
