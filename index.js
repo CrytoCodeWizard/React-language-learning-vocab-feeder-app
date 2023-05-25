@@ -3,6 +3,7 @@ const schedule = require('node-schedule');
 const { Pool } = require('pg');
 const { WebClient } = require('@slack/web-api');
 const { parse } = require('qs');
+const { App } = require('@slack/bolt');
 
 const express = require("express");
 const PORT = process.env.NODE_PORT || 3001;
@@ -18,7 +19,22 @@ const {
 
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 
-schedule.scheduleJob('30 07 * * *', function(){
+const slackApp = new App({
+	signingSecret: process.env.SLACK_SIGNING_SECRET,
+	token: process.env.SLACK_BOT_TOKEN,
+	socketMode: true,
+	appToken: process.env.SLACK_APP_TOKEN,
+	port: process.env.PORT || 3000
+});
+
+(async () => {
+	// Start the app
+	await slackApp.start();
+  
+	sendDailyDutchVocabToSlack(DEFAULT_VOCAB_BATCH_COUNT);
+})();
+
+schedule.scheduleJob('* * * * *', () => {
 	sendDailyDutchVocabToSlack(DEFAULT_VOCAB_BATCH_COUNT);
 });
 
@@ -32,7 +48,16 @@ const pool = new Pool({
 	connectionTimeoutMillis: 2000
 });
 
-const getVocabularyRecords = async function(recordCount) {
+const buildKeyString = (resultRows) => {
+	let keyString = '';
+	for(let row in resultRows) {
+		keyString += resultRows[row].id;
+	}
+
+	return keyString;
+}
+
+const getVocabularyRecords = async (recordCount) => {
 	pool.connect((err, client, release) => {
 		if(err) {
 			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
@@ -42,18 +67,27 @@ const getVocabularyRecords = async function(recordCount) {
 			if(err) {
 				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			} else {
-				slackVars.data = result.rows;
-				postSlackMessage(result.rows);
+				const keyString = buildKeyString(result.rows);
+				slackVars.data[keyString] = result.rows;
+
+				console.log(slackVars.data);
+				postSlackMessage(result.rows, keyString);
 			}
 		});
 	});
 }
 
-const sendDailyDutchVocabToSlack = async function(recordCount) {
+// ideas:
+// 1: map<timestamp, vocabrows>
+// 2: map<autoincrementint, vocabrows>
+// 3: map<string, vocabrows> -> string "153 144 919"
+
+// need to change slackVars.data to a map of some sort...
+const sendDailyDutchVocabToSlack = async (recordCount) => {
 	await getVocabularyRecords(recordCount);
 }
 
-const updateVocabRecordsAsSeen = async function(field, vocabId) {
+const updateVocabRecordsAsSeen = async (field, vocabId) => {
 	pool.connect((err, client, release) => {
 		if(err) {
 			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
@@ -69,7 +103,7 @@ const updateVocabRecordsAsSeen = async function(field, vocabId) {
 	});
 }
 
-function resetVocabRecordsToUnseen(field) {
+const resetVocabRecordsToUnseen = (field) => {
 	pool.connect((err, client, release) => {
 		if(err) {
 			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
@@ -85,17 +119,39 @@ function resetVocabRecordsToUnseen(field) {
 	});
 }
 
-function postSlackMessage(data) {
+const postSlackMessage = (data, keyString) => {
 	(async () => {
+		let blockStr = buildDutchBlockStr(data);
+
 		const result = await web.chat.postMessage({
-			blocks: buildDutchBlockStr(data),
+			blocks: JSON.stringify(buildDutchBlockStr(data)),
 			channel: process.env.SLACK_CHANNEL_CONVERSATION_ID,
 			text: 'Your daily Dutch vocab has arrived!'
 		});
+
+		let indexes = [2, 4, 6];
+		for(let index in indexes) {
+			for(let element in blockStr[indexes[index]].elements) {
+				slackApp.action(blockStr[indexes[index]].elements[element].action_id, async ({ body, ack, client }) => {
+		
+					// Acknowledge the action
+					await ack();
+				
+					(async () => {
+						const updateResult = await client.chat.update({
+							blocks: buildUpdatedDutchBlockStr(body.actions[0].action_id, body.actions[0].value, keyString),
+							channel: process.env.SLACK_CHANNEL_CONVERSATION_ID,
+							text: "You have marked a vocab record as seen or mastered.",
+							ts: result.ts
+						});
+					})();
+				});
+			}
+		}
 	})();
 }
 
-function buildDutchBlockStr(data) {
+const buildDutchBlockStr = (data) => {
 	const blockStr = initBlockStrWithDailyMessageHeaderTitle();
 	
 	for(let entry in data) {
@@ -136,14 +192,15 @@ function buildDutchBlockStr(data) {
 			]
 		});
 	}
-	return JSON.stringify(blockStr);
+
+	return blockStr;
 }
 
-function buildPronunciationString(pronunciationlink) {
+const buildPronunciationString = (pronunciationlink) => {
 	return pronunciationlink === '#' ? 'No URL found' : ('<' + pronunciationlink + '|(Pronunciation)>');
 }
 
-function initBlockStrWithDailyMessageHeaderTitle() {
+const initBlockStrWithDailyMessageHeaderTitle = () => {
 	return [
 		{
 			"type" : "header",
@@ -156,7 +213,7 @@ function initBlockStrWithDailyMessageHeaderTitle() {
 	];
 }
 
-function updateIdActionList(actionValue, rowIdOfAction) {
+const updateIdActionList = (actionValue, rowIdOfAction) => {
 	updateVocabRecordsAsSeen(actionValue, rowIdOfAction);
 	if(actionValue === slackVars.masteredString) {
 		slackVars.masteredIds.push(rowIdOfAction);
@@ -165,16 +222,18 @@ function updateIdActionList(actionValue, rowIdOfAction) {
 	}
 }
 
-function getRowIdFromSlackAction(payloadActionId) {
+const getRowIdFromSlackAction = (payloadActionId) => {
 	return parseInt(payloadActionId.split('-')[1]);
 }
 
-function buildUpdatedDutchBlockStr(payloadAction) {
-	const rowIdOfAction = getRowIdFromSlackAction(payloadAction.action_id);
-	updateIdActionList(payloadAction.value, rowIdOfAction);
+
+const buildUpdatedDutchBlockStr = (actionId, actionValue, keyString) => {
+	const rowIdOfAction = getRowIdFromSlackAction(actionId);
+	updateIdActionList(actionValue, rowIdOfAction);
 
 	const blockStr = initBlockStrWithDailyMessageHeaderTitle();
-	const data = slackVars.data;
+	const data = slackVars.data[keyString];
+
 	for(let entryIndex in data) {
 		if(!slackVars.masteredIds.includes(data[entryIndex].id) && !slackVars.seenIds.includes(data[entryIndex].id) && rowIdOfAction !== data[entryIndex].id) {
 			blockStr.push({
@@ -225,6 +284,7 @@ function buildUpdatedDutchBlockStr(payloadAction) {
 			});
 		}
 	}
+	console.log(JSON.stringify(blockStr));
 	return JSON.stringify(blockStr);
 }
 
