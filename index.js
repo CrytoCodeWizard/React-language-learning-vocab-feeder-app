@@ -70,19 +70,12 @@ const getVocabularyRecords = async (recordCount) => {
 				const keyString = buildKeyString(result.rows);
 				slackVars.data[keyString] = result.rows;
 
-				console.log(slackVars.data);
 				postSlackMessage(result.rows, keyString);
 			}
 		});
 	});
 }
 
-// ideas:
-// 1: map<timestamp, vocabrows>
-// 2: map<autoincrementint, vocabrows>
-// 3: map<string, vocabrows> -> string "153 144 919"
-
-// need to change slackVars.data to a map of some sort...
 const sendDailyDutchVocabToSlack = async (recordCount) => {
 	await getVocabularyRecords(recordCount);
 }
@@ -284,7 +277,7 @@ const buildUpdatedDutchBlockStr = (actionId, actionValue, keyString) => {
 			});
 		}
 	}
-	console.log(JSON.stringify(blockStr));
+
 	return JSON.stringify(blockStr);
 }
 
