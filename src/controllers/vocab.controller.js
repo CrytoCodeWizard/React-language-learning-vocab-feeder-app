@@ -1,5 +1,5 @@
 const vocabService = require('../services/vocab.service');
-
+const { sendDailyDutchVocabToSlack } = require('../services/slack.service');
 const { 
 	QUERY_EXECUTION_ERROR_MSG, 
 	QUERY_CONNECTION_ERROR_MSG 

@@ -1,4 +1,9 @@
 const pool = require('../configs/pool.config');
+const { 
+	SEND_DAILY_SLACK_BTN_LABEL,
+	QUERY_CONNECTION_ERROR_MSG,
+	QUERY_EXECUTION_ERROR_MSG
+} = require('./../../constants');
 
 const getConnection = (callback) => {
     pool.getConnection((err, connection, release) => {
