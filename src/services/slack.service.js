@@ -1,6 +1,13 @@
 const { 
 	QUERY_EXECUTION_ERROR_MSG, 
-	QUERY_CONNECTION_ERROR_MSG 
+	QUERY_CONNECTION_ERROR_MSG,
+	SLACK_DAILY_MSG_HEADER,
+	SLACK_UPDATE_MSG_HEADER,
+	SLACK_MARK_AS_MASTERED_MSG,
+	SLACK_MARK_AS_SEEN_MSG,
+	SLACK_BLOCK_ELEMENT_BUTTON_TEXT_TYPE,
+	SEEN_STRING,
+	MASTERED_STRING
 } = require('./../../constants');
 
 const { buildKeyString } = require('../utils/helper.util');
@@ -33,31 +40,30 @@ const getVocabularyRecords = async (recordCount) => {
 
 const postSlackMessage = (data, keyString) => {
 	(async () => {
-		let blockStr = buildDutchBlockStr(data);
+		const blockStr = buildDutchBlockStr(data);
 
 		const result = await web.chat.postMessage({
-			blocks: JSON.stringify(buildDutchBlockStr(data)),
+			blocks: JSON.stringify(blockStr),
 			channel: process.env.SLACK_CHANNEL_CONVERSATION_ID,
-			text: 'Your daily Dutch vocab has arrived!'
+			text: SLACK_DAILY_MSG_HEADER
 		});
 
-		let indexes = [2, 4, 6];
-		for(let index in indexes) {
-			for(let element in blockStr[indexes[index]].elements) {
-				slackApp.action(blockStr[indexes[index]].elements[element].action_id, async ({ body, ack, client }) => {
-		
-					// Acknowledge the action
-					await ack();
-				
-					(async () => {
-						const updateResult = await client.chat.update({
-							blocks: buildUpdatedDutchBlockStr(body.actions[0].action_id, body.actions[0].value, keyString),
-							channel: process.env.SLACK_CHANNEL_CONVERSATION_ID,
-							text: "You have marked a vocab record as seen or mastered.",
-							ts: result.ts
-						});
-					})();
-				});
+		for(let i in blockStr) {
+			if(blockStr[i].type === 'actions') {
+				for(let element in blockStr[i].elements) {
+					slackApp.action(blockStr[i].elements[element].action_id, async ({ body, ack, client }) => {
+						await ack();
+					
+						(async () => {
+							await client.chat.update({
+								blocks: buildUpdatedDutchBlockStr(body.actions[0].action_id, body.actions[0].value, keyString),
+								channel: process.env.SLACK_CHANNEL_CONVERSATION_ID,
+								text: SLACK_UPDATE_MSG_HEADER,
+								ts: result.ts
+							});
+						})();
+					});
+				}
 			}
 		}
 	})();
@@ -68,37 +74,37 @@ const buildDutchBlockStr = (data) => {
 	
 	for(let entry in data) {
 		blockStr.push({
-			"type" : "section",
+			"type" : SLACK_BLOCK_TYPE_SECTION,
 			"fields" : [{
-				"type": "mrkdwn",
+				"type": SLACK_BLOCK_FIELD_TYPE_MARKDOWN,
 				"text" : "*Dutch:*\n"+data[entry].dutch+" - "+ buildPronunciationString(data[entry].pronunciationlink)
 			},
 			{
-				"type": "mrkdwn",
+				"type": SLACK_BLOCK_FIELD_TYPE_MARKDOWN,
 				"text": "*English:*\n"+data[entry].english
 			}]
 		});
 		blockStr.push({
-			"type": "actions",
+			"type": SLACK_BLOCK_TYPE_ACTION,
 			"elements": [
 				{
-					"type": "button",
+					"type": SLACK_BLOCK_ELEMENT_TYPE_BUTTON,
 					"text": {
-						"type": "plain_text",
-						"text": "Mark as Seen",
+						"type": SLACK_BLOCK_ELEMENT_BUTTON_TEXT_TYPE,
+						"text": SLACK_MARK_AS_SEEN_MSG,
 						"emoji": true
 					},
-					"value": slackVars.seenString,
+					"value": SEEN_STRING,
 					"action_id": "actionId-" + data[entry].id + '-1' 
 				},
 				{
-					"type": "button",
+					"type": SLACK_BLOCK_ELEMENT_TYPE_BUTTON,
 					"text": {
-						"type": "plain_text",
-						"text": "Mark as Mastered",
+						"type": SLACK_BLOCK_ELEMENT_BUTTON_TEXT_TYPE,
+						"text": SLACK_MARK_AS_MASTERED_MSG,
 						"emoji": true
 					},
-					"value": slackVars.masteredString,
+					"value": MASTERED_STRING,
 					"action_id": "actionId-" + data[entry].id + '-2'
 				}
 			]
@@ -117,7 +123,7 @@ const initBlockStrWithDailyMessageHeaderTitle = () => {
 		{
 			"type" : "header",
 			"text": {
-				"type": "plain_text",
+				"type": SLACK_BLOCK_ELEMENT_BUTTON_TEXT_TYPE,
 				"emoji" : false,
 				"text" : "Words for " + new Date().toLocaleString('en-US', { dateStyle: 'long' })
 			}
@@ -127,9 +133,9 @@ const initBlockStrWithDailyMessageHeaderTitle = () => {
 
 const updateIdActionList = (actionValue, rowIdOfAction) => {
 	updateVocabRecordsAsSeen(actionValue, rowIdOfAction);
-	if(actionValue === slackVars.masteredString) {
+	if(actionValue === MASTERED_STRING) {
 		slackVars.masteredIds.push(rowIdOfAction);
-	} else if(actionValue === slackVars.seenString) {
+	} else if(actionValue === SEEN_STRING) {
 		slackVars.seenIds.push(rowIdOfAction);
 	}
 }
@@ -149,48 +155,48 @@ const buildUpdatedDutchBlockStr = (actionId, actionValue, keyString) => {
 	for(let entryIndex in data) {
 		if(!slackVars.masteredIds.includes(data[entryIndex].id) && !slackVars.seenIds.includes(data[entryIndex].id) && rowIdOfAction !== data[entryIndex].id) {
 			blockStr.push({
-				"type" : "section",
+				"type" : SLACK_BLOCK_TYPE_SECTION,
 				"fields" : [{
-					"type": "mrkdwn",
+					"type": SLACK_BLOCK_FIELD_TYPE_MARKDOWN,
 					"text" : "*Dutch:*\n"+data[entryIndex].dutch+" - "+ buildPronunciationString(data[entryIndex].pronunciationlink)
 				},
 				{
-					"type": "mrkdwn",
+					"type": SLACK_BLOCK_FIELD_TYPE_MARKDOWN,
 					"text": "*English:*\n"+data[entryIndex].english
 				}]
 			});
 
 			blockStr.push({
-				"type": "actions",
+				"type": SLACK_BLOCK_TYPE_ACTION,
 				"elements": [
 					{
-						"type": "button",
+						"type": SLACK_BLOCK_ELEMENT_TYPE_BUTTON,
 						"text": {
-							"type": "plain_text",
-							"text": "Mark as Seen",
+							"type": SLACK_BLOCK_ELEMENT_BUTTON_TEXT_TYPE,
+							"text": SLACK_MARK_AS_SEEN_MSG,
 							"emoji": true
 						},
-						"value": slackVars.seenString,
+						"value": SEEN_STRING,
 						"action_id": "actionId-" + data[entryIndex].id + '-1'
 					},
 					{
-						"type": "button",
+						"type": SLACK_BLOCK_ELEMENT_TYPE_BUTTON,
 						"text": {
-							"type": "plain_text",
-							"text": "Mark as Mastered",
+							"type": SLACK_BLOCK_ELEMENT_BUTTON_TEXT_TYPE,
+							"text": SLACK_MARK_AS_MASTERED_MSG,
 							"emoji": true
 						},
-						"value": slackVars.masteredString,
+						"value": MASTERED_STRING,
 						"action_id": "actionId-" + data[entryIndex].id + '-2'
 					}
 				]
 			});
 		} else {
-			let actionStr = slackVars.masteredIds.includes(data[entryIndex].id) ? 'mastered' : 'seen';
+			let actionStr = slackVars.masteredIds.includes(data[entryIndex].id) ? MASTERED_STRING : SEEN_STRING;
 			blockStr.push({
-				"type" : "section",
+				"type" : SLACK_BLOCK_TYPE_SECTION,
 				"fields" : [{
-					"type": "mrkdwn",
+					"type": SLACK_BLOCK_FIELD_TYPE_MARKDOWN,
 					"text" : "*Dutch:*\n"+data[entryIndex].dutch+" - marked as " + actionStr
 				}]
 			});
