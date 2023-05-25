@@ -5,7 +5,7 @@ const {
 } = require('./../constants');
 
 const initDailyDutchScheduler = () => {
-    schedule.scheduleJob('* * * * *', () => {
+    schedule.scheduleJob('30 7 * * *', () => {
         sendDailyDutchVocabToSlack(DEFAULT_VOCAB_BATCH_COUNT);
     });
 }
