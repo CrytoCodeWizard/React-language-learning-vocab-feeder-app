@@ -21,7 +21,7 @@
     "nodemon": "^2.0.20"
   },
   "dependencies": {
-    "@slack/bolt": "^3.12.1",
+    "@slack/bolt": "^3.13.1",
     "@slack/web-api": "^6.7.2",
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
