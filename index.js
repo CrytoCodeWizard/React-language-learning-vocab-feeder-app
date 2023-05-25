@@ -14,7 +14,7 @@ const vocabRouter = require('./src/routes/vocab.route');
 	initDailyDutchScheduler();
 })();
 
-app.use('/vocab', vocabRouter);
+app.use('/api', vocabRouter);
 
 app.listen(PORT, () => {
 	console.log(`Server listening on ${PORT}`);
