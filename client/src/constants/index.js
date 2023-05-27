@@ -6,8 +6,8 @@ import ReviewLessonNotes from "../components/ReviewLessonNotes/ReviewLessonNotes
 // ReviewVocab.js
 export const SETNAME_QUERY_PARAM = "set_name";
 export const REVIEWTYPE_QUERY_PARAM = "review_type";
-export const GET_REVIEW_CATEGORIES_ENDPOINT = "/getReviewCategories";
-export const GET_VOCAB_FOR_CATEGORY_ENDPOINT = "/getVocabForCategory";
+export const GET_REVIEW_CATEGORIES_ENDPOINT = "/api/review-categories";
+export const GET_VOCAB_FOR_CATEGORY_ENDPOINT = "/api/vocab-for-category";
 export const SHOW_CARD_SIDE_CSS = "vocab-card-show-side";
 export const HIDE_CARD_SIDE_CSS = "vocab-card-hide-side";
 export const HIDE_NEXT_BTN_CSS = "vocab-card-hide-next-btn";
@@ -21,8 +21,8 @@ export const CHOOSE_CATEGORY_LABEL = "Choose a category";
 export const REVIEW_ALL_CATEGORY_LABEL = "Review All";
 
 // SlackDailyVocab.js
-export const GET_SLACK_INFO_ENDPOINT = "/getSlackInfo";
-export const SEND_SLACK_MSG_ENDPOINT = "/sendSlack";
+export const GET_SLACK_INFO_ENDPOINT = "/api/slack-info";
+export const SEND_SLACK_MSG_ENDPOINT = "/api/slack-message";
 export const SLACK_ENDPOINT = "/slack";
 export const SLACK_INPUT_PLACEHOLDER = "# of Records to Send";
 export const SLACK_SENT_CONFIRMATION = "Your vocab has been sent to Slack!";
@@ -45,7 +45,7 @@ export const VOCAB_CARD_REVIEWTYPE_TEST_STR = VOCAB_CARD_REVIEWTYPE_TEST_LABEL.t
 
 // ReviewLessonNotes.js
 export const LESSON_NOTES_TITLE = "Lesson Notes";
-export const GET_LESSON_PEOPLE_NAMES_ENDPOINT = "/getLessonPeopleNames";
+export const GET_LESSON_PEOPLE_NAMES_ENDPOINT = "/api/lesson-people-names";
 export const PERSON_QUERY_PARAM = "person";
 export const LESSONDATE_QUERY_PARAM = "lessondate";
 export const LESSONS_ENDPOINT = "/lessons";
