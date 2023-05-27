@@ -129,11 +129,36 @@ const getVocabForCategory = async (req, res, next) => {
 	});
 };
 
+const getVocab = async (req, res, next) => {
+	let body = "";
+	req.on('data', chunk => {
+		body += chunk.toString();
+	});
+	req.on('end', async () => {
+		let queryStr = "SELECT id, english, dutch, pronunciationLink, notes, set_name FROM vocabulary ORDER BY dutch";
+
+		await pool.connect(async (err, client, release) => {
+			if(err) {
+				return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
+			}
+			client.query(queryStr, async (err, result) => {
+				release();
+				if(err) {
+					return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
+				} else {
+					res.send(result.rows);
+				}
+			});
+		});
+	});
+};
+
 module.exports = {
     getSlackInfo,
     getReviewCategories,
     getLessonPeopleNames,
     getVocabForCategory,
+	getVocab,
     postVocab,
     postSlackMessage
 };

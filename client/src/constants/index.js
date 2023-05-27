@@ -2,6 +2,7 @@ import SlackDailyVocab from "../components/SlackDailyVocab/SlackDailyVocab";
 import ReviewVocab from "../components/ReviewVocab/ReviewVocab";
 import Home from "../components/Home/Home";
 import ReviewLessonNotes from "../components/ReviewLessonNotes/ReviewLessonNotes";
+import ReviewVocabEntries from "../components/ReviewVocabEntries/ReviewVocabEntries";
 
 // ReviewVocab.js
 export const SETNAME_QUERY_PARAM = "set_name";
@@ -51,6 +52,11 @@ export const LESSONDATE_QUERY_PARAM = "lessondate";
 export const LESSONS_ENDPOINT = "/lessons";
 export const LESSON_ENDPOINT_PERSON_PARAM = LESSONS_ENDPOINT + "?" + PERSON_QUERY_PARAM + "=";
 
+// ReviewVocabEntries.js
+export const DECK_TITLE = "Vocab Entries";
+export const DECK_ENDPOINT = "/deck";
+export const GET_ALL_VOCAB_RECORDS = "/api/vocab";
+
 // AWS
 export const S3_BUCKET_URL = "https://vocab-feeder.s3.eu-west-3.amazonaws.com/vocab-images/";
 
@@ -84,5 +90,10 @@ export const ROUTES = [
         route: LESSONS_ENDPOINT,
         linkLabel: "Notes",
         element: <ReviewLessonNotes/>
+    },
+    {
+        route: DECK_ENDPOINT,
+        linkLabel: "Deck",
+        element: <ReviewVocabEntries/>
     }
 ];
