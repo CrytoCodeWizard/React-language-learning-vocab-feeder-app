@@ -20,7 +20,7 @@ const ReviewVocabEntries = (props) => {
   },[]);
 
   return (
-    <DataTable vocabRecords={vocabRecords}/>
+    <DataTable vocabRecords={vocabRecords} LIMIT="10"/>
   );
 }
 

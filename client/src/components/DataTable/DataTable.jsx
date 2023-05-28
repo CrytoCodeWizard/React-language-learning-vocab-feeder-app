@@ -14,30 +14,10 @@ import {
 import { useTheme } from "@table-library/react-table-library/theme";
 import { usePagination } from '@table-library/react-table-library/pagination';
 
-const DataTable = ({ vocabRecords, rowsPerPage }) => {
-  const [search, setSearch] = React.useState('');
-  const LIMIT = 10;
-  const handleSearch = (event) => {
-    setSearch(event.target.value);
-  };
+import TableSearch from './TableSearch/TableSearch';
+import TableFooter from './TableFooter/TableFooter';
 
-  const data = {
-    nodes: vocabRecords.filter((item) =>
-    item.dutch.toLowerCase().includes(search.toLowerCase())
-    ),
-  };
-
-  const pageCount = parseInt(data.nodes.length / 10) + 1;
-  const pagination = usePagination(
-    data,
-    {
-      state: {
-        page: 0,
-        size: LIMIT,
-      }
-    }
-  );
-
+const DataTable = ({ vocabRecords, LIMIT }) => {
   const theme = useTheme({
     HeaderRow: `
         background-color: #eaf5fd;
@@ -87,21 +67,37 @@ const DataTable = ({ vocabRecords, rowsPerPage }) => {
     }
   ];
 
+  const [search, setSearch] = React.useState('');
+
+  const data = {
+    nodes: vocabRecords.filter((item) =>
+    item.dutch.toLowerCase().includes(search.toLowerCase())
+    ),
+  };
+
+  const pageCount = parseInt(data.nodes.length / LIMIT) + 1;
+  const pagination = usePagination(
+    data,
+    {
+      state: {
+        page: 0,
+        size: LIMIT,
+      }
+    }
+  );
+
   const editRow = (clickedRow) => {
-    console.log('editing...');
     console.log(clickedRow);
-    console.log(pageCount);
-    console.log(data);
-    console.log(vocabRecords.length);
   }
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
 
   return (
     <>
-      <div className={styles.searchWrapper}>
-        <label htmlFor="search">
-          <input id="search" type="text" placeholder="Enter a search term" onChange={handleSearch} />
-        </label>
-      </div>
+      <TableSearch styles={styles} handleSearch={handleSearch} />
+
       <div className={styles.wrapper}>
         <Table data={data} theme={theme} pagination={pagination}>
           {(tableList) => (
@@ -131,40 +127,7 @@ const DataTable = ({ vocabRecords, rowsPerPage }) => {
           )}
         </Table>
 
-        <button
-          type="button"
-          disabled={pagination.state.page === 0}
-          onClick={() => pagination.fns.onSetPage(0)}
-        >
-          {"|<"}
-        </button>
-        <button
-          type="button"
-          disabled={pagination.state.page === 0}
-          onClick={() =>
-            pagination.fns.onSetPage(pagination.state.page - 1)
-          }
-        >
-          {"<"}
-        </button>
-        <button
-          type="button"
-          disabled={pagination.state.page + 1 === pageCount}
-          onClick={() =>
-            pagination.fns.onSetPage(pagination.state.page + 1)
-          }
-        >
-          {">"}
-        </button>
-        <button
-          type="button"
-          disabled={pagination.state.page + 1 === pageCount}
-          onClick={() =>
-            pagination.fns.onSetPage(pageCount - 1)
-          }
-        >
-          {">|"}
-        </button>
+        <TableFooter pagination={pagination} pageCount={pageCount}/>
       </div>
     </>
   );
