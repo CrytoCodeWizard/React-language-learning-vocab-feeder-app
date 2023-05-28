@@ -1,5 +1,5 @@
 // @/src/components/DataTable/DataTable.jsx
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styles from "./Table.module.css";
 
 import {
@@ -12,10 +12,11 @@ import {
   Cell
 } from '@table-library/react-table-library/table';
 import { useTheme } from "@table-library/react-table-library/theme";
+import { usePagination } from '@table-library/react-table-library/pagination';
 
 const DataTable = ({ vocabRecords, rowsPerPage }) => {
   const [search, setSearch] = React.useState('');
-
+  const LIMIT = 10;
   const handleSearch = (event) => {
     setSearch(event.target.value);
   };
@@ -25,6 +26,17 @@ const DataTable = ({ vocabRecords, rowsPerPage }) => {
     item.dutch.toLowerCase().includes(search.toLowerCase())
     ),
   };
+
+  const pageCount = parseInt(data.nodes.length / 10) + 1;
+  const pagination = usePagination(
+    data,
+    {
+      state: {
+        page: 0,
+        size: LIMIT,
+      }
+    }
+  );
 
   const theme = useTheme({
     HeaderRow: `
@@ -78,16 +90,20 @@ const DataTable = ({ vocabRecords, rowsPerPage }) => {
   const editRow = (clickedRow) => {
     console.log('editing...');
     console.log(clickedRow);
+    console.log(pageCount);
+    console.log(data);
+    console.log(vocabRecords.length);
   }
 
   return (
     <>
-      <label htmlFor="search">
-        Search:
-        <input id="search" type="text" onChange={handleSearch} />
-      </label>
+      <div className={styles.searchWrapper}>
+        <label htmlFor="search">
+          <input id="search" type="text" placeholder="Enter a search term" onChange={handleSearch} />
+        </label>
+      </div>
       <div className={styles.wrapper}>
-        <Table data={data} theme={theme}>
+        <Table data={data} theme={theme} pagination={pagination}>
           {(tableList) => (
             <>
               <Header>
@@ -114,6 +130,41 @@ const DataTable = ({ vocabRecords, rowsPerPage }) => {
             </>
           )}
         </Table>
+
+        <button
+          type="button"
+          disabled={pagination.state.page === 0}
+          onClick={() => pagination.fns.onSetPage(0)}
+        >
+          {"|<"}
+        </button>
+        <button
+          type="button"
+          disabled={pagination.state.page === 0}
+          onClick={() =>
+            pagination.fns.onSetPage(pagination.state.page - 1)
+          }
+        >
+          {"<"}
+        </button>
+        <button
+          type="button"
+          disabled={pagination.state.page + 1 === pageCount}
+          onClick={() =>
+            pagination.fns.onSetPage(pagination.state.page + 1)
+          }
+        >
+          {">"}
+        </button>
+        <button
+          type="button"
+          disabled={pagination.state.page + 1 === pageCount}
+          onClick={() =>
+            pagination.fns.onSetPage(pageCount - 1)
+          }
+        >
+          {">|"}
+        </button>
       </div>
     </>
   );
