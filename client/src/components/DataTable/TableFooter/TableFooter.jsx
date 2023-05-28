@@ -6,7 +6,7 @@ const TableFooter = ({ pagination, pageCount }) => {
         disabled={pagination.state.page === 0}
         onClick={() => pagination.fns.onSetPage(0)}
       >
-        {"|<"}
+        {"<<"}
       </button>
       <button
         type="button"
@@ -33,7 +33,7 @@ const TableFooter = ({ pagination, pageCount }) => {
           pagination.fns.onSetPage(pageCount - 1)
         }
       >
-        {">|"}
+        {">>"}
       </button>
       </>
     );
