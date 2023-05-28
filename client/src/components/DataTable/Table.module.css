@@ -50,3 +50,8 @@
 .button:focus {
   outline: orange 5px auto;
 }
+
+.wrapper {
+  margin: 0 auto;
+  max-width: 1400px;
+}
