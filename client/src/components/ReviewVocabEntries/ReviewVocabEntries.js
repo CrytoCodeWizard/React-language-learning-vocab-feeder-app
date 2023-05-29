@@ -19,8 +19,20 @@ const ReviewVocabEntries = (props) => {
       });
   },[]);
 
+  // update vocabRecords on page after edit
+  const onUpdateVocab = (updatedVocab) => {
+    const updatedVocabs = vocabRecords.map(
+      vocab => {
+        if (vocab.id === updatedVocab.id) {
+          return updatedVocab;
+        } else {return vocab;}
+      }
+    )
+    setVocabRecords(updatedVocabs);
+  }
+
   return (
-    <DataTable vocabRecords={vocabRecords} LIMIT="10"/>
+    <DataTable vocabRecords={vocabRecords} LIMIT="10" onUpdateVocab={onUpdateVocab}/>
   );
 }
 
