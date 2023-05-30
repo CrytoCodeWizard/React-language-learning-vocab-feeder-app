@@ -88,6 +88,36 @@ const postVocab = async (req, res, next) => {
 	});
 };
 
+const updateVocab = async (req, res, next) => {
+	let body = "";
+	req.on('data', chunk => {
+		body += chunk.toString();
+	});
+	
+	req.on('end', () => {
+		const newVocab = JSON.parse(decodeURIComponent(body));
+
+		const query = vocabService.updateVocabRecordById(newVocab.id, Object.keys(newVocab));
+		const colValues = Object.keys(newVocab).map(function (key) {
+			return newVocab[key];
+		});
+
+		pool.connect(async (err, client, release) => {
+			if(err) {
+				return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
+			}
+			client.query(query, colValues, function(err, result) {
+				release();
+				if(err) {
+					return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
+				} else {
+					res.send(result);
+				}
+			});
+		});
+	});
+};
+
 const postSlackMessage = async (req, res, next) => {
 	// resetVocabRecordsToUnseen(); // TODO: REMOVE AFTER ACTIVE DEV IS DONE
 	let body = "";
@@ -160,5 +190,6 @@ module.exports = {
     getVocabForCategory,
 	getVocab,
     postVocab,
+	updateVocab,
     postSlackMessage
 };
