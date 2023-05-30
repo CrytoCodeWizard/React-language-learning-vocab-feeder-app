@@ -150,7 +150,7 @@ const DataTable = ({ vocabRecords, LIMIT, onUpdateVocab }) => {
       ) :
       (
         <>
-        <TableSearch styles={styles} handleSearch={handleSearch} />
+        <TableSearch styles={styles} handleSearch={handleSearch} searchValue={search} />
 
         <div className={styles.wrapper}>
           <Table data={data} theme={theme} pagination={pagination}>
