@@ -10,7 +10,7 @@ const ReviewVocabEntries = (props) => {
   const [vocabRecords, setVocabRecords] = useState([]);
 
   useEffect(() => {
-    fetch(Constants.GET_ALL_VOCAB_RECORDS)
+    fetch(Constants.VOCAB_RECORDS_ENDPOINT)
       .then((res) => res.json())
       .then((records) => {
         setVocabRecords(records);

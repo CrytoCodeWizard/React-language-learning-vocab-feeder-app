@@ -1,21 +1,23 @@
 import React from 'react';
 
+import * as Constants from './../../constants';
 const EditVocab = ({ editForm, handleChange, handleVocabUpdate, handleCancel }) => {
   let {id, dutch, english, pronunciationlink, notes, set_name} = editForm;
 
   // PATCH request; calls handleVocabUpdate to push changes to the page
   const handleEditForm = (e) => {
     e.preventDefault();
-    fetch(`http://localhost:9292/vocabs/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type" : "application/json"
-      },
+
+    fetch(Constants.VOCAB_RECORDS_ENDPOINT, {
+      method: Constants.PATCH_METHOD,
       body: JSON.stringify(editForm),
     })
-    .then(res => res.json())
+    .then(res => res.json()) 
     .then(updatedVocab => {
-      handleVocabUpdate(updatedVocab)})
+      handleVocabUpdate(updatedVocab)
+    }).catch((err) => {
+      console.error(Constants.ERROR_STR, err);
+    });
   }
 
   return (

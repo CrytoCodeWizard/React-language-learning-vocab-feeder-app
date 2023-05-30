@@ -160,7 +160,7 @@ const DataTable = ({ vocabRecords, LIMIT, onUpdateVocab }) => {
                   <HeaderRow>
                     {
                       columns.map((column) => (
-                        <HeaderCell>{column.label}</HeaderCell>
+                        <HeaderCell key={column.field}>{column.label}</HeaderCell>
                       ))
                     }
                   </HeaderRow>

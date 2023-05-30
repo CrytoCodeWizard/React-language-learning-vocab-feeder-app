@@ -55,7 +55,7 @@ export const LESSON_ENDPOINT_PERSON_PARAM = LESSONS_ENDPOINT + "?" + PERSON_QUER
 // ReviewVocabEntries.js
 export const DECK_TITLE = "Vocab Entries";
 export const DECK_ENDPOINT = "/deck";
-export const GET_ALL_VOCAB_RECORDS = "/api/vocab";
+export const VOCAB_RECORDS_ENDPOINT = "/api/vocab";
 
 // AWS
 export const S3_BUCKET_URL = "https://vocab-feeder.s3.eu-west-3.amazonaws.com/vocab-images/";
@@ -64,6 +64,7 @@ export const S3_BUCKET_URL = "https://vocab-feeder.s3.eu-west-3.amazonaws.com/vo
 export const ERROR_STR = "Error: ";
 export const GET_METHOD = "GET";
 export const POST_METHOD = "POST";
+export const PATCH_METHOD = "PATCH";
 export const CONTENT_TYPE_JSON_UTF8 = "application/json; charset=UTF-8";
 export const LOADING_STR = "Loading...";
 export const ROOT_ENDPOINT = "/";

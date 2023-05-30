@@ -111,7 +111,7 @@ const updateVocab = async (req, res, next) => {
 				if(err) {
 					return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 				} else {
-					res.send(result);
+					res.send(newVocab);
 				}
 			});
 		});
