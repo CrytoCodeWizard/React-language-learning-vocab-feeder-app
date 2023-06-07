@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "NODE_ENV=production node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "NODE_ENV=development nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
     "express": "^4.18.1",
     "node-schedule": "^2.1.0",
     "pg": "^8.8.0",
-    "qs": "^6.11.0"
+    "qs": "^6.11.0",
+    "winston": "^3.9.0"
   }
 }
