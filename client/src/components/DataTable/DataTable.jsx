@@ -146,7 +146,10 @@ const DataTable = ({ vocabRecords, LIMIT, onUpdateVocab }) => {
           editForm={editForm}
           handleChange={handleChange}
           handleVocabUpdate={handleVocabUpdate}
-          handleCancel={handleCancel} />
+          handleCancel={handleCancel}
+          columns={columns}
+          theme={theme}
+          />
       ) :
       (
         <>

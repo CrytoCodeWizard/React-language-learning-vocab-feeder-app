@@ -1,6 +1,7 @@
 import React from 'react';
 
 import * as Constants from './../../constants';
+import styles from "./EditVocab.module.css";
 const EditVocab = ({ editForm, handleChange, handleVocabUpdate, handleCancel }) => {
   let {id, dutch, english, pronunciationlink, notes, set_name} = editForm;
 
@@ -20,12 +21,34 @@ const EditVocab = ({ editForm, handleChange, handleVocabUpdate, handleCancel }) 
     });
   }
 
+  const labels = {
+    'Dutch' : dutch,
+    'English' : english,
+    'Pronunciation URL' : pronunciationlink,
+    'Notes' : notes,
+    'Category' : set_name
+  };
+
   return (
-    <div>
-      <h4>Edit Vocab</h4>
+    <div className={styles.alignCenter}>
+      <h3 className={styles.editVocabHeader}>Edit Vocab</h3>
       <form onSubmit={handleEditForm}>
-        <input type="text" name="dutch" value={dutch} onChange={handleChange}/>
-        <input type="text" name="english" value={english} onChange={handleChange}/>
+
+        <div className='form-wrapper'>
+          {Object.entries(labels).map(([key, value], i) =>
+            
+            <div>
+              <div style={{display: 'inline-block'}}>
+                {key}
+              </div>
+              <div style={{display: 'inline-block'}}>
+                <input type="text" name={key.toLowerCase()} value={value} onChange={handleChange}/>
+              </div>
+            </div>
+          ) }
+        </div>
+
+
         <input type="text" name="pronunciationlink" value={pronunciationlink} onChange={handleChange}/>
         <input type="text" name="notes" value={notes} onChange={handleChange}/>
         <input type="text" name="set_name" value={set_name} onChange={handleChange}/>
