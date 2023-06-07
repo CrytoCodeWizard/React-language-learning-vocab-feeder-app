@@ -6,11 +6,15 @@ const {
 	QUERY_CONNECTION_ERROR_MSG 
 } = require('../../constants');
 
+const { buildLoggingStr } = require('./../utils/helper.util');
+let logger = require('./../../log'); // this retrieves default logger which was configured in log.js
+
 const getSlackInfo = async (req, res, next) => {
     try {
         res.json(await vocabService.getSlackInfo());
     } catch (err) {
         console.error("Error: ", err.message);
+		logger.error(buildLoggingStr("Error: ", err.message));
         next(err);
     }
 }
@@ -18,11 +22,13 @@ const getSlackInfo = async (req, res, next) => {
 const getReviewCategories = async (req, res, next) => {
 	await pool.connect(async (err, client, release) => {
 		if(err) {
+			logger.error(buildLoggingStr(QUERY_CONNECTION_ERROR_MSG, err.stack));
 			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 		client.query("SELECT name FROM category WHERE name != '' ORDER BY category_order ASC", async (err, result) => {
 			release();
 			if(err) {
+				logger.error(buildLoggingStr(QUERY_EXECUTION_ERROR_MSG, err.stack));
 				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			} else {
 				let setNames = [];
@@ -39,11 +45,13 @@ const getReviewCategories = async (req, res, next) => {
 const getLessonPeopleNames = async (req, res, next) => {
 	await pool.connect(async (err, client, release) => {
 		if(err) {
+			logger.error(buildLoggingStr(QUERY_CONNECTION_ERROR_MSG, err.stack));
 			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 		client.query("SELECT person, TO_CHAR(lesson_date, 'YYYY-MM-DD') as lesson_date, notes, lesson_title FROM lesson", async (err, result) => {
 			release();
 			if(err) {
+				logger.error(buildLoggingStr(QUERY_EXECUTION_ERROR_MSG, err.stack));
 				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			} else {
 				const lessons = {};
@@ -115,11 +123,13 @@ const getVocabForCategory = async (req, res, next) => {
 
 		await pool.connect(async (err, client, release) => {
 			if(err) {
+				logger.error(buildLoggingStr(QUERY_CONNECTION_ERROR_MSG, err.stack));
 				return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 			}
 			client.query(queryStr, params, async (err, result) => {
 				release();
 				if(err) {
+					logger.error(buildLoggingStr(QUERY_EXECUTION_ERROR_MSG, err.stack));
 					return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 				} else {
 					res.send(result.rows);
@@ -139,11 +149,13 @@ const getVocab = async (req, res, next) => {
 
 		await pool.connect(async (err, client, release) => {
 			if(err) {
+				logger.error(buildLoggingStr(QUERY_CONNECTION_ERROR_MSG, err.stack));
 				return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 			}
 			client.query(queryStr, async (err, result) => {
 				release();
 				if(err) {
+					logger.error(buildLoggingStr(QUERY_EXECUTION_ERROR_MSG, err.stack));
 					return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 				} else {
 					res.send(result.rows);

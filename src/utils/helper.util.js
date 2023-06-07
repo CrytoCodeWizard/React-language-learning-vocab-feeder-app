@@ -7,6 +7,11 @@ const buildKeyString = (resultRows) => {
 	return keyString;
 }
 
+const buildLoggingStr = (message, payload) => {
+	return `${message} : ${payload}`;
+}
+
 module.exports = {
     buildKeyString,
+	buildLoggingStr
 }
