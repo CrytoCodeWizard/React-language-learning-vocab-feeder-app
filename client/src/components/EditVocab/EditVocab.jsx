@@ -30,30 +30,33 @@ const EditVocab = ({ editForm, handleChange, handleVocabUpdate, handleCancel }) 
   };
 
   return (
-    <div className={styles.alignCenter}>
-      <h3 className={styles.editVocabHeader}>Edit Vocab</h3>
+    <div className={styles.formStyles}>
       <form onSubmit={handleEditForm}>
 
         <div className='form-wrapper'>
-          {Object.entries(labels).map(([key, value], i) =>
-            
-            <div>
-              <div style={{display: 'inline-block'}}>
-                {key}
-              </div>
-              <div style={{display: 'inline-block'}}>
-                <input type="text" name={key.toLowerCase()} value={value} onChange={handleChange}/>
-              </div>
-            </div>
-          ) }
+          <div className={styles.editFormInputWrapper}>
+            {Object.entries(labels).map(([key, value], i) =>
+              
+                <div className={styles.editFormInput}>
+                  <div className={styles.inputLabel}>
+                    {key}
+                  </div>
+                  <div>
+                    <input type="text" name={key.toLowerCase()} value={value} onChange={handleChange}/>
+                  </div>
+                </div>
+            ) }
+          </div>
         </div>
 
-
-        <input type="text" name="pronunciationlink" value={pronunciationlink} onChange={handleChange}/>
-        <input type="text" name="notes" value={notes} onChange={handleChange}/>
-        <input type="text" name="set_name" value={set_name} onChange={handleChange}/>
-        <button type="submit">Submit Changes</button>
-        <button onClick={handleCancel}>Cancel</button>
+        <div classNames={styles.editFormBtnRow}>
+          <div className={styles.editFormBtns}>
+            <button type="submit">Save</button>
+          </div>
+          <div className={styles.editFormBtns}>
+            <button onClick={handleCancel}>Cancel</button>
+          </div>
+        </div>
       </form>
     </div>
   )
