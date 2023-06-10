@@ -2,33 +2,37 @@ import React, { useState, useEffect } from "react";
 
 import "./../../App.css";
 import "./../../Snackbar.css";
-import styles from "./ReviewVocabEntries.module.css";
 
 import * as Constants from './../../constants';
-import Table from "./../Table";
+import DataTable from '../DataTable/DataTable';
 
 const ReviewVocabEntries = (props) => {
-  const [records, setRecords] = useState([]);
+  const [vocabRecords, setVocabRecords] = useState([]);
 
   useEffect(() => {
-    fetch(Constants.GET_ALL_VOCAB_RECORDS)
+    fetch(Constants.VOCAB_RECORDS_ENDPOINT)
       .then((res) => res.json())
-      .then((data) => {
-        setRecords(data);
+      .then((records) => {
+        setVocabRecords(records);
       }).catch((err) => {
         console.error(Constants.ERROR_STR, err);
       });
   },[]);
 
+  // update vocabRecords on page after edit
+  const onUpdateVocab = (updatedVocab) => {
+    const updatedVocabs = vocabRecords.map(
+      vocab => {
+        if (vocab.id === updatedVocab.id) {
+          return updatedVocab;
+        } else {return vocab;}
+      }
+    )
+    setVocabRecords(updatedVocabs);
+  }
+
   return (
-    <div className="DeckVocabApp">
-        <h1>{Constants.DECK_TITLE}</h1>
-        <main className={styles.container}>
-          <div className={styles.wrapper}>
-            <Table data={records} rowsPerPage={10} />
-          </div>
-        </main>
-    </div>
+    <DataTable vocabRecords={vocabRecords} LIMIT="10" onUpdateVocab={onUpdateVocab}/>
   );
 }
 

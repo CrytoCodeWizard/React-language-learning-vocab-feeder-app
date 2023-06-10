@@ -1,0 +1,42 @@
+.formStyles { 
+    background: rgb(234, 245, 253);
+    text-align: center;
+    margin: 12px;
+}
+
+.editVocabHeader {
+    color: white;
+    font-size: 16px;
+}
+
+.editFormInputWrapper{
+    width: 1400px;
+    margin: 0 auto;
+    display: inline-block;
+}
+
+.editFormInput {
+    margin: 12px auto;
+    text-align: left;
+    display: inline-block;
+    width: 250px;
+}
+
+.editFormInput > div > input {
+    width: 220px;
+}
+
+.inputLabel {
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.searchInput > label, .searchInput > label > input {
+    display: block;
+    text-align: left;
+}
+
+.editFormBtns {
+    margin: 8px;
+    display: inline-block;
+}
