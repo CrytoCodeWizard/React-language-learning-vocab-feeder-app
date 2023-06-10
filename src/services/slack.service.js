@@ -20,6 +20,8 @@ const slackVars = require('./../../slack-vars');
 const { WebClient } = require('@slack/web-api');
 const { slackApp } = require('./../configs/slack.config');
 
+const { buildLoggingStr } = require('./../utils/helper.util');
+let logger = require('./../../log'); // this retrieves default logger which was configured in log.js
 const web = new WebClient(process.env.SLACK_BOT_TOKEN);
 
 const sendDailyDutchVocabToSlack = async (recordCount) => {
@@ -31,6 +33,7 @@ const getVocabularyRecords = async (recordCount) => {
 		client.query('SELECT id, dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1', [recordCount], (err, result) => {
 			release();
 			if(err) {
+				logger.error(buildLoggingStr(QUERY_EXECUTION_ERROR_MSG, err.stack));
 				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			} else {
 				const keyString = buildKeyString(result.rows);
@@ -213,6 +216,7 @@ const buildUpdatedDutchBlockStr = (actionId, actionValue, keyString) => {
 const updateVocabRecordsAsSeen = async (field, vocabId) => {
 	pool.connect((err, client, release) => {
 		if(err) {
+			logger.error(buildLoggingStr(QUERY_CONNECTION_ERROR_MSG, err.stack));
 			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 
@@ -220,6 +224,7 @@ const updateVocabRecordsAsSeen = async (field, vocabId) => {
 		client.query(queryStr, [[vocabId]], (err, result) => {
 			release();
 			if(err) {
+				logger.error(buildLoggingStr(QUERY_EXECUTION_ERROR_MSG, err.stack));
 				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			}
 		});
@@ -229,6 +234,7 @@ const updateVocabRecordsAsSeen = async (field, vocabId) => {
 const resetVocabRecordsToUnseen = (field) => {
 	pool.connect((err, client, release) => {
 		if(err) {
+			logger.error(buildLoggingStr(QUERY_CONNECTION_ERROR_MSG, err.stack));
 			return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack)
 		}
 
@@ -236,6 +242,7 @@ const resetVocabRecordsToUnseen = (field) => {
 		client.query(queryStr, (err, result) => {
 			release();
 			if(err) {
+				logger.error(buildLoggingStr(QUERY_EXECUTION_ERROR_MSG, err.stack));
 				return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
 			}
 		});
