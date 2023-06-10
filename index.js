@@ -8,6 +8,9 @@ const { initDailyDutchScheduler } = require('./jobs/vocab.job');
 const { slackApp } = require('./src/configs/slack.config');
 const vocabRouter = require('./src/routes/vocab.route');
 
+const { buildLoggingStr } = require('./src/utils/helper.util');
+let logger = require('./log'); // this retrieves default logger which was configured in log.js
+
 (async () => {
 	await slackApp.start();
 
@@ -17,5 +20,6 @@ const vocabRouter = require('./src/routes/vocab.route');
 app.use('/api', vocabRouter);
 
 app.listen(PORT, () => {
+	logger.info(buildLoggingStr('Server listening on ' + PORT));
 	console.log(`Server listening on ${PORT}`);
 });

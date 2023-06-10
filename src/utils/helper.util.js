@@ -7,8 +7,14 @@ const buildKeyString = (resultRows) => {
 	return keyString;
 }
 
-const buildLoggingStr = (message, payload) => {
-	return `${message} : ${payload}`;
+const buildLoggingStr = (message, opts) => {
+	if(opts) {
+		if(opts['payload']) {
+			return `${message} : ${opts[payload]}`;
+		}
+	}
+	
+	return `${message}`;
 }
 
 module.exports = {
