@@ -1,4 +1,5 @@
 const { App } = require('@slack/bolt');
+const storage = require('node-persist');
 
 const slackApp = new App({
 	signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -9,5 +10,6 @@ const slackApp = new App({
 });
 
 module.exports = {
-    slackApp
+    slackApp,
+	storage
 }
