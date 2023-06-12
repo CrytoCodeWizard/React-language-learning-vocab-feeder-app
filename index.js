@@ -5,17 +5,22 @@ const express = require("express");
 const app = express();
 
 const { initDailyDutchScheduler } = require('./jobs/vocab.job');
-const { slackApp } = require('./src/configs/slack.config');
+let { slackApp, storage } = require('./src/configs/slack.config');
 const vocabRouter = require('./src/routes/vocab.route');
 
 const { buildLoggingStr } = require('./src/utils/helper.util');
 let logger = require('./log'); // this retrieves default logger which was configured in log.js
 
 (async () => {
+	await storage.init({dir: '/home/pi/vocab-feeder/localStorage'});
 	await slackApp.start();
 
 	initDailyDutchScheduler();
 })();
+
+slackApp.error((error) => {
+	logger.info(buildLoggingStr(error));
+});
 
 app.use('/api', vocabRouter);
 
