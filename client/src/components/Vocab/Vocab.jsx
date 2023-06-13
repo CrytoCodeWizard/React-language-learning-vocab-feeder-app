@@ -1,10 +1,12 @@
-import React from 'react';
-import {
-  Row,
-  Cell
-} from '@table-library/react-table-library/table';
+import React from "react";
+import { Row, Cell } from "@table-library/react-table-library/table";
 
-const Vocab = ({vocab, vocab:{id, dutch, english, pronunciationlink, notes, set_name}, captureEdit, changeEditState}) => {
+const Vocab = ({
+  vocab,
+  vocab: { id, dutch, english, pronunciationlink, notes, set_name },
+  captureEdit,
+  changeEditState,
+}) => {
   return (
     <Row key={id} item={vocab}>
       <Cell>{dutch}</Cell>
@@ -16,14 +18,14 @@ const Vocab = ({vocab, vocab:{id, dutch, english, pronunciationlink, notes, set_
         <button
           onClick={() => {
             captureEdit(vocab);
-            changeEditState(vocab)
+            changeEditState(vocab);
           }}
         >
           Edit
         </button>
       </Cell>
     </Row>
-  )
+  );
 };
 
 export default Vocab;

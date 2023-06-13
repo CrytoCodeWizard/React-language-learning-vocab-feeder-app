@@ -16,8 +16,10 @@ export const HIDE_PREV_BTN_CSS = "vocab-card-hide-prev-btn";
 
 // CategoryList.js
 export const REVIEW_ENDPOINT = "/review";
-export const REVIEW_ENDPOINT_SETNAME_PARAM = REVIEW_ENDPOINT + "?" + SETNAME_QUERY_PARAM + "=";
-export const REVIEW_ENDPOINT_REVIEW_TYPE_PARAM = REVIEW_ENDPOINT + "?" + REVIEWTYPE_QUERY_PARAM + "=";
+export const REVIEW_ENDPOINT_SETNAME_PARAM =
+  REVIEW_ENDPOINT + "?" + SETNAME_QUERY_PARAM + "=";
+export const REVIEW_ENDPOINT_REVIEW_TYPE_PARAM =
+  REVIEW_ENDPOINT + "?" + REVIEWTYPE_QUERY_PARAM + "=";
 export const CHOOSE_CATEGORY_LABEL = "Choose a category";
 export const REVIEW_ALL_CATEGORY_LABEL = "Review All";
 
@@ -37,12 +39,16 @@ export const VOCAB_CARD_FLIP_BUTTON_STR = "Flip";
 
 export const VOCAB_CARD_ANSWER_PLACEHOLDER = "Enter your answer.";
 export const VOCAB_CARD_SUBMIT_BUTTON_STR = "Submit";
-export const VOCAB_CARD_ORIGINAL_BUTTON_CSS = "vocab-card-controls-btn vocab-card-controls-flip-btn";
-export const VOCAB_CARD_DISABLED_BUTTON_CSS = "vocab-card-controls-btn vocab-card-controls-disable-btn";
+export const VOCAB_CARD_ORIGINAL_BUTTON_CSS =
+  "vocab-card-controls-btn vocab-card-controls-flip-btn";
+export const VOCAB_CARD_DISABLED_BUTTON_CSS =
+  "vocab-card-controls-btn vocab-card-controls-disable-btn";
 export const VOCAB_CARD_REVIEWTYPE_PRACTICE_LABEL = "Practice";
-export const VOCAB_CARD_REVIEWTYPE_PRACTICE_STR = VOCAB_CARD_REVIEWTYPE_PRACTICE_LABEL.toLowerCase();
+export const VOCAB_CARD_REVIEWTYPE_PRACTICE_STR =
+  VOCAB_CARD_REVIEWTYPE_PRACTICE_LABEL.toLowerCase();
 export const VOCAB_CARD_REVIEWTYPE_TEST_LABEL = "Test";
-export const VOCAB_CARD_REVIEWTYPE_TEST_STR = VOCAB_CARD_REVIEWTYPE_TEST_LABEL.toLowerCase();
+export const VOCAB_CARD_REVIEWTYPE_TEST_STR =
+  VOCAB_CARD_REVIEWTYPE_TEST_LABEL.toLowerCase();
 
 // ReviewLessonNotes.js
 export const LESSON_NOTES_TITLE = "Lesson Notes";
@@ -50,7 +56,8 @@ export const GET_LESSON_PEOPLE_NAMES_ENDPOINT = "/api/lesson-people-names";
 export const PERSON_QUERY_PARAM = "person";
 export const LESSONDATE_QUERY_PARAM = "lessondate";
 export const LESSONS_ENDPOINT = "/lessons";
-export const LESSON_ENDPOINT_PERSON_PARAM = LESSONS_ENDPOINT + "?" + PERSON_QUERY_PARAM + "=";
+export const LESSON_ENDPOINT_PERSON_PARAM =
+  LESSONS_ENDPOINT + "?" + PERSON_QUERY_PARAM + "=";
 
 // ReviewVocabEntries.js
 export const DECK_TITLE = "Vocab Entries";
@@ -58,7 +65,8 @@ export const DECK_ENDPOINT = "/deck";
 export const VOCAB_RECORDS_ENDPOINT = "/api/vocab";
 
 // AWS
-export const S3_BUCKET_URL = "https://vocab-feeder.s3.eu-west-3.amazonaws.com/vocab-images/";
+export const S3_BUCKET_URL =
+  "https://vocab-feeder.s3.eu-west-3.amazonaws.com/vocab-images/";
 
 // Generic
 export const ERROR_STR = "Error: ";
@@ -72,29 +80,29 @@ export const ROOT_ENDPOINT = "/";
 // App.js
 export const APP_HEADER_TITLE = "De Nederlandse App";
 export const ROUTES = [
-    {   
-        route: ROOT_ENDPOINT,
-        linkLabel: "Home",
-        element: <Home/>
-    },
-    {
-        route: SLACK_ENDPOINT,
-        linkLabel: "Slack",
-        element: <SlackDailyVocab/>
-    },
-    {
-        route: REVIEW_ENDPOINT,
-        linkLabel: "Review",
-        element: <ReviewVocab/>
-    },
-    {
-        route: LESSONS_ENDPOINT,
-        linkLabel: "Notes",
-        element: <ReviewLessonNotes/>
-    },
-    {
-        route: DECK_ENDPOINT,
-        linkLabel: "Deck",
-        element: <ReviewVocabEntries/>
-    }
+  {
+    route: ROOT_ENDPOINT,
+    linkLabel: "Home",
+    element: <Home />,
+  },
+  {
+    route: SLACK_ENDPOINT,
+    linkLabel: "Slack",
+    element: <SlackDailyVocab />,
+  },
+  {
+    route: REVIEW_ENDPOINT,
+    linkLabel: "Review",
+    element: <ReviewVocab />,
+  },
+  {
+    route: LESSONS_ENDPOINT,
+    linkLabel: "Notes",
+    element: <ReviewLessonNotes />,
+  },
+  {
+    route: DECK_ENDPOINT,
+    linkLabel: "Deck",
+    element: <ReviewVocabEntries />,
+  },
 ];

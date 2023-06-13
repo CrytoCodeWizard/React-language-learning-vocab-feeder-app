@@ -8,6 +8,6 @@ const Home = (props) => {
       <img src={WindmillSVG} alt="Windmill SVG" />
     </div>
   );
-}
+};
 
 export default Home;

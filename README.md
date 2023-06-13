@@ -14,18 +14,20 @@ Then, I needed a better flashcard system. Quizlet is getting too bulky (and subs
 
 Now it's the Review tab! I set up the data (which is something you have to do with flashcard apps usually anyways), categorized it, and set up a reviewing system that supports both card by card review, and category-based testing.
 
-Next, I really needed a way to organize my class notes. I have a chaotic notebook of lesson notes that have little organization. 
+Next, I really needed a way to organize my class notes. I have a chaotic notebook of lesson notes that have little organization.
 
 Outcome: a Notes tab!
 
 That's the overview: when I think something would be handy, and I don't want to have to trek all over the place to organize it, it's going into the app!
 
 ## Technology
+
 App is intended to run on a dedicated machine 24/7 (I use an rPi as it doesn't need to be compute intensive). Backend is PostgreSQL and Node, frontend is React.
 
 I mostly chose this stack because I wanted to learn more about it.
 
 ## Installing and Running
+
 Currently, a lot of steps are required for initial setup (build script hasn't been completed yet).
 
 This will stay a TODO until the complicated parts have been refactored into a setup script (tables and columns have to be manually configured, as does an env file)
