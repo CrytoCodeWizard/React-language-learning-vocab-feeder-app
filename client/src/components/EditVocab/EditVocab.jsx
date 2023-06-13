@@ -1,9 +1,14 @@
-import React from 'react';
+import React from "react";
 
-import * as Constants from './../../constants';
+import * as Constants from "./../../constants";
 import styles from "./EditVocab.module.css";
-const EditVocab = ({ editForm, handleChange, handleVocabUpdate, handleCancel }) => {
-  let {id, dutch, english, pronunciationlink, notes, set_name} = editForm;
+const EditVocab = ({
+  editForm,
+  handleChange,
+  handleVocabUpdate,
+  handleCancel,
+}) => {
+  let { id, dutch, english, pronunciationlink, notes, set_name } = editForm;
 
   // PATCH request; calls handleVocabUpdate to push changes to the page
   const handleEditForm = (e) => {
@@ -13,39 +18,41 @@ const EditVocab = ({ editForm, handleChange, handleVocabUpdate, handleCancel }) 
       method: Constants.PATCH_METHOD,
       body: JSON.stringify(editForm),
     })
-    .then(res => res.json()) 
-    .then(updatedVocab => {
-      handleVocabUpdate(updatedVocab)
-    }).catch((err) => {
-      console.error(Constants.ERROR_STR, err);
-    });
-  }
+      .then((res) => res.json())
+      .then((updatedVocab) => {
+        handleVocabUpdate(updatedVocab);
+      })
+      .catch((err) => {
+        console.error(Constants.ERROR_STR, err);
+      });
+  };
 
   const labels = {
-    'Dutch' : dutch,
-    'English' : english,
-    'Pronunciation URL' : pronunciationlink,
-    'Notes' : notes,
-    'Category' : set_name
+    Dutch: dutch,
+    English: english,
+    "Pronunciation URL": pronunciationlink,
+    Notes: notes,
+    Category: set_name,
   };
 
   return (
     <div className={styles.formStyles}>
       <form onSubmit={handleEditForm}>
-
-        <div className='form-wrapper'>
+        <div className="form-wrapper">
           <div className={styles.editFormInputWrapper}>
-            {Object.entries(labels).map(([key, value], i) =>
-              
-                <div className={styles.editFormInput}>
-                  <div className={styles.inputLabel}>
-                    {key}
-                  </div>
-                  <div>
-                    <input type="text" name={key.toLowerCase()} value={value} onChange={handleChange}/>
-                  </div>
+            {Object.entries(labels).map(([key, value], i) => (
+              <div className={styles.editFormInput}>
+                <div className={styles.inputLabel}>{key}</div>
+                <div>
+                  <input
+                    type="text"
+                    name={key.toLowerCase()}
+                    value={value}
+                    onChange={handleChange}
+                  />
                 </div>
-            ) }
+              </div>
+            ))}
           </div>
         </div>
 
@@ -59,7 +66,7 @@ const EditVocab = ({ editForm, handleChange, handleVocabUpdate, handleCancel }) 
         </div>
       </form>
     </div>
-  )
+  );
 };
 
 export default EditVocab;

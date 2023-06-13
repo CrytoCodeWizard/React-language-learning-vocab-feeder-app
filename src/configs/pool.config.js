@@ -1,5 +1,5 @@
-const { env } = process
-const { Pool } = require('pg')
+const { env } = process;
+const { Pool } = require("pg");
 
 const pool = new Pool({
   host: env.POSTGRES_HOST,
@@ -8,7 +8,7 @@ const pool = new Pool({
   database: env.POSTGRES_DATABASE_NAME,
   max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000
-})
+  connectionTimeoutMillis: 2000,
+});
 
-module.exports = pool
+module.exports = pool;

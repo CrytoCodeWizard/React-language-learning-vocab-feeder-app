@@ -104,6 +104,7 @@
   float: right;
 }
 
-.vocab-card-hide-next-btn, .vocab-card-hide-prev-btn {
+.vocab-card-hide-next-btn,
+.vocab-card-hide-prev-btn {
   visibility: hidden;
 }

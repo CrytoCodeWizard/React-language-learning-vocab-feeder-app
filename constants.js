@@ -1,29 +1,30 @@
-const DEFAULT_VOCAB_BATCH_COUNT = 3
-const SEND_DAILY_SLACK_BTN_LABEL = 'Send Daily Dutch Vocab'
-const QUERY_EXECUTION_ERROR_MSG = 'Error executing query'
-const QUERY_CONNECTION_ERROR_MSG = 'Error acquiring client'
+const DEFAULT_VOCAB_BATCH_COUNT = 3;
+const SEND_DAILY_SLACK_BTN_LABEL = "Send Daily Dutch Vocab";
+const QUERY_EXECUTION_ERROR_MSG = "Error executing query";
+const QUERY_CONNECTION_ERROR_MSG = "Error acquiring client";
 
-const SLACK_DAILY_MSG_HEADER = 'Your daily Dutch vocab has arrived!'
-const SLACK_UPDATE_MSG_HEADER = 'You have marked a vocab record as seen or mastered.'
-const SLACK_MARK_AS_SEEN_MSG = 'Mark as seen'
-const SLACK_MARK_AS_MASTERED_MSG = 'Mark as mastered'
+const SLACK_DAILY_MSG_HEADER = "Your daily Dutch vocab has arrived!";
+const SLACK_UPDATE_MSG_HEADER =
+  "You have marked a vocab record as seen or mastered.";
+const SLACK_MARK_AS_SEEN_MSG = "Mark as seen";
+const SLACK_MARK_AS_MASTERED_MSG = "Mark as mastered";
 
-const SLACK_BLOCK_FIELD_TYPE_MARKDOWN = 'mrkdwn'
-const SLACK_BLOCK_TYPE_SECTION = 'section'
-const SLACK_BLOCK_TYPE_ACTION = 'actions'
-const SLACK_BLOCK_ELEMENT_TYPE_BUTTON = 'button'
-const SLACK_BLOCK_ELEMENT_BUTTON_TEXT_TYPE = 'plain_text'
+const SLACK_BLOCK_FIELD_TYPE_MARKDOWN = "mrkdwn";
+const SLACK_BLOCK_TYPE_SECTION = "section";
+const SLACK_BLOCK_TYPE_ACTION = "actions";
+const SLACK_BLOCK_ELEMENT_TYPE_BUTTON = "button";
+const SLACK_BLOCK_ELEMENT_BUTTON_TEXT_TYPE = "plain_text";
 
-const EMPTY_PRONUNCIATION_LINK = '#'
-const NO_URL_FOUND_STRING = 'No URL found'
+const EMPTY_PRONUNCIATION_LINK = "#";
+const NO_URL_FOUND_STRING = "No URL found";
 
-const SEEN_STRING = 'seen'
-const MASTERED_STRING = 'mastered'
+const SEEN_STRING = "seen";
+const MASTERED_STRING = "mastered";
 
-const REGISTERED_ACTIONS_STRING = 'registeredActions'
-const DATA_GROUP_KEYSTRING = 'dataGroups'
-const KEYSTRING_BY_ACTION_ID = 'keyStringByActionId'
-const TIMESTAMP_BY_KEYSTRING = 'timestampByKeystring'
+const REGISTERED_ACTIONS_STRING = "registeredActions";
+const DATA_GROUP_KEYSTRING = "dataGroups";
+const KEYSTRING_BY_ACTION_ID = "keyStringByActionId";
+const TIMESTAMP_BY_KEYSTRING = "timestampByKeystring";
 
 module.exports = {
   DEFAULT_VOCAB_BATCH_COUNT,
@@ -46,5 +47,5 @@ module.exports = {
   KEYSTRING_BY_ACTION_ID,
   TIMESTAMP_BY_KEYSTRING,
   EMPTY_PRONUNCIATION_LINK,
-  NO_URL_FOUND_STRING
-}
+  NO_URL_FOUND_STRING,
+};

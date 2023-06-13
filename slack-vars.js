@@ -1,7 +1,7 @@
-const seenIds = []
-const masteredIds = []
+const seenIds = [];
+const masteredIds = [];
 
 module.exports = {
   seenIds,
-  masteredIds
-}
+  masteredIds,
+};

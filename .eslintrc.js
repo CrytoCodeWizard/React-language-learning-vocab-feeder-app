@@ -3,23 +3,17 @@ module.exports = {
     browser: true,
     commonjs: true,
     es2021: true,
-    node: true
+    node: true,
   },
-  extends: [
-    'standard',
-    'plugin:react/recommended'
-  ],
+  extends: ["standard", "plugin:react/recommended", "prettier"],
   parserOptions: {
-    ecmaVersion: 'latest'
+    ecmaVersion: "latest",
   },
-  plugins: [
-    'react'
-  ],
-  rules: {
-  },
+  plugins: ["react"],
+  rules: {},
   settings: {
     react: {
-      version: 'detect'
-    }
-  }
-}
+      version: "detect",
+    },
+  },
+};
