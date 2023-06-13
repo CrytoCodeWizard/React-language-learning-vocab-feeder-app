@@ -152,6 +152,7 @@ const getVocabForCategory = async (req, res, next) => {
 };
 
 const getVocab = async (req, res, next) => {
+  req.on("data", () => {});
   req.on("end", async () => {
     const queryStr =
       "SELECT id, english, dutch, pronunciationLink, notes, set_name FROM vocabulary ORDER BY dutch";
