@@ -1,14 +1,14 @@
 import React from "react";
 
 import * as Constants from "./../../constants";
-import styles from "./EditVocab.module.css";
-const EditVocab = ({
+import styles from "./AddVocab.module.css";
+const AddVocab = ({
   editForm,
   handleChange,
   handleVocabUpdate,
   handleCancel,
 }) => {
-  let { dutch, english, pronunciationlink, notes, set_name } = editForm;
+  let { id, dutch, english, pronunciationlink, notes, set_name } = editForm;
 
   // PATCH request; calls handleVocabUpdate to push changes to the page
   const handleEditForm = (e) => {
@@ -41,7 +41,7 @@ const EditVocab = ({
         <div className="form-wrapper">
           <div className={styles.editFormInputWrapper}>
             {Object.entries(labels).map(([key, value], i) => (
-              <div className={styles.editFormInput} key={key}>
+              <div className={styles.editFormInput}>
                 <div className={styles.inputLabel}>{key}</div>
                 <div>
                   <input
@@ -56,7 +56,7 @@ const EditVocab = ({
           </div>
         </div>
 
-        <div className={styles.editFormBtnRow}>
+        <div classNames={styles.editFormBtnRow}>
           <div className={styles.editFormBtns}>
             <button type="submit">Save</button>
           </div>
@@ -69,4 +69,4 @@ const EditVocab = ({
   );
 };
 
-export default EditVocab;
+export default AddVocab;

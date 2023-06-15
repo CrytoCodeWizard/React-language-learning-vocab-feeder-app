@@ -33,11 +33,7 @@ const ReviewVocabEntries = (props) => {
   };
 
   return (
-    <DataTable
-      vocabRecords={vocabRecords}
-      LIMIT="10"
-      onUpdateVocab={onUpdateVocab}
-    />
+    <DataTable data={vocabRecords} LIMIT="10" onUpdateVocab={onUpdateVocab} />
   );
 };
 
