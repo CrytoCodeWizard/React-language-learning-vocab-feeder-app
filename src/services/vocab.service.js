@@ -1,4 +1,5 @@
 const pool = require("../configs/pool.config");
+const format = require("pg-format");
 const {
   SEND_DAILY_SLACK_BTN_LABEL,
   QUERY_CONNECTION_ERROR_MSG,
@@ -49,7 +50,15 @@ const getReviewCategories = async (req, res, next) => {
   });
 };
 
-const updateVocabRecordById = (id, cols) => {
+const buildInsertVocabRecordQuery = (newVocab) => {
+  return format(
+    "INSERT INTO vocabulary (%I) VALUES (%L)",
+    Object.keys(newVocab),
+    Object.values(newVocab)
+  );
+};
+
+const buildUpdateVocabRecordByIdQuery = (id, cols) => {
   const query = ["UPDATE vocabulary"];
   query.push("SET");
 
@@ -72,5 +81,6 @@ module.exports = {
   getSlackInfo,
   getConnection,
   getReviewCategories,
-  updateVocabRecordById,
+  buildUpdateVocabRecordByIdQuery,
+  buildInsertVocabRecordQuery,
 };
