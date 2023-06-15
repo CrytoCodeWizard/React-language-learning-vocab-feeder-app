@@ -27,7 +27,7 @@ const DataTable = ({ data, LIMIT, onCreateVocab, onUpdateVocab }) => {
     english: "",
     pronunciationlink: "",
     notes: "",
-    set_name: "",
+    category: "",
   });
 
   // capture user input in edit form inputs

@@ -10,7 +10,7 @@ const AddVocab = ({
   onCreateVocab,
   styles,
 }) => {
-  let { dutch, english, pronunciationlink, notes, set_name } = addForm;
+  let { dutch, english, pronunciationlink, notes, category } = addForm;
 
   // PATCH request; calls handleVocabCreate to push changes to the page
   const handleAddForm = (e) => {
@@ -39,9 +39,9 @@ const AddVocab = ({
   const labels = {
     Dutch: dutch,
     English: english,
-    "Pronunciation URL": pronunciationlink,
+    PronunciationLink: pronunciationlink,
     Notes: notes,
-    Category: set_name,
+    Category: category,
   };
 
   return (
