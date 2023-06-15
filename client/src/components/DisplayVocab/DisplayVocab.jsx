@@ -18,10 +18,14 @@ import Vocab from "./../Vocab/Vocab";
 const DisplayVocab = ({
   data,
   LIMIT,
-  isEditing,
+  addForm,
+  addRecord,
   editForm,
+  editRecord,
+  setAddForm,
+  setAddRecord,
   setEditForm,
-  setIsEditing,
+  setEditRecord,
 }) => {
   const theme = useTheme({
     HeaderRow: `
@@ -102,12 +106,16 @@ const DisplayVocab = ({
     },
   });
 
+  const changeAddState = () => {
+    setAddRecord((addRecord) => !addRecord); // shows the form
+  };
+
   // needed logic for conditional rendering of the form - shows the vocab you want when you want them, and hides it when you don't
   const changeEditState = (vocab) => {
     if (vocab.id === editForm.id) {
-      setIsEditing((isEditing) => !isEditing); // hides the form
-    } else if (isEditing === false) {
-      setIsEditing((isEditing) => !isEditing); // shows the form
+      setEditRecord((editRecord) => !editRecord); // hides the form
+    } else if (editRecord === false) {
+      setEditRecord((editRecord) => !editRecord); // shows the form
     }
   };
 
@@ -120,7 +128,13 @@ const DisplayVocab = ({
       />
 
       <div className={styles.vocabEntryBtn}>
-        <input type="submit" value="Add Vocab Entry" />
+        <button
+          onClick={() => {
+            changeAddState();
+          }}
+        >
+          Add Vocab Entry
+        </button>
       </div>
 
       <div className={styles.wrapper}>
