@@ -50,7 +50,7 @@ const AddVocab = ({
         <div className="form-wrapper">
           <div className={styles.formInputWrapper}>
             {Object.entries(labels).map(([key, value], i) => (
-              <div className={styles.formInput}>
+              <div className={styles.formInput} key={key}>
                 <div className={styles.inputLabel}>{key}</div>
                 <div>
                   <input
@@ -65,7 +65,7 @@ const AddVocab = ({
           </div>
         </div>
 
-        <div classNames={styles.formBtnRow}>
+        <div className={styles.formBtnRow}>
           <div className={styles.formBtns}>
             <button type="submit">Save</button>
           </div>
