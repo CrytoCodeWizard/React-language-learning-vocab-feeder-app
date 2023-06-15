@@ -2,12 +2,7 @@ import React from "react";
 
 import * as Constants from "./../../constants";
 import styles from "./EditVocab.module.css";
-const EditVocab = ({
-  editForm,
-  handleChange,
-  handleVocabUpdate,
-  handleCancel,
-}) => {
+const EditVocab = ({ editForm, handleChange, setIsEditing, onUpdateVocab }) => {
   let { dutch, english, pronunciationlink, notes, set_name } = editForm;
 
   // PATCH request; calls handleVocabUpdate to push changes to the page
@@ -25,6 +20,16 @@ const EditVocab = ({
       .catch((err) => {
         console.error(Constants.ERROR_STR, err);
       });
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+  };
+
+  // when PATCH request happens; auto-hides the form, pushes changes to display
+  const handleVocabUpdate = (updatedVocab) => {
+    setIsEditing(false);
+    onUpdateVocab(updatedVocab);
   };
 
   const labels = {

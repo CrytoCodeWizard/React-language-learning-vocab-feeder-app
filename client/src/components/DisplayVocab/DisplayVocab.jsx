@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Table,
@@ -18,8 +18,6 @@ import Vocab from "./../Vocab/Vocab";
 const DisplayVocab = ({
   data,
   LIMIT,
-  search,
-  handleSearch,
   isEditing,
   editForm,
   setEditForm,
@@ -77,6 +75,12 @@ const DisplayVocab = ({
       field: "editBtn",
     },
   ];
+
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
 
   // capture the vocab you wish to edit, set to state
   const captureEdit = (clickedVocab) => {
