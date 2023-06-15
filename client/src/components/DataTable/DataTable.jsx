@@ -104,8 +104,6 @@ const DataTable = ({ data, LIMIT, onUpdateVocab }) => {
         handleChange={handleChange}
         handleVocabUpdate={handleVocabUpdate}
         handleCancel={handleCancel}
-        columns={columns}
-        theme={theme}
       />
     );
   } else if (isAdding) {
