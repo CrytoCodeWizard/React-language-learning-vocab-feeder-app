@@ -8,6 +8,7 @@ router.get("/review-categories", vocabController.getReviewCategories);
 router.get("/lesson-people-names", vocabController.getLessonPeopleNames);
 router.get("/vocab", vocabController.getVocab);
 router.patch("/vocab", vocabController.updateVocab);
+router.post("/vocab", vocabController.postVocab);
 router.post("/slack-message", vocabController.postSlackMessage);
 router.post("/vocab-for-category", vocabController.getVocabForCategory);
 

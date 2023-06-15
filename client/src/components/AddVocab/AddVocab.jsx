@@ -2,27 +2,28 @@ import React from "react";
 
 import * as Constants from "./../../constants";
 
-const EditVocab = ({
-  editForm,
-  handleEditChange,
+const AddVocab = ({
+  addForm,
+  handleAddChange,
   handleCancel,
-  setEditRecord,
-  onUpdateVocab,
+  setAddRecord,
+  onCreateVocab,
   styles,
 }) => {
-  let { dutch, english, pronunciationlink, notes, set_name } = editForm;
+  let { dutch, english, pronunciationlink, notes, category } = addForm;
 
-  // PATCH request; calls handleVocabUpdate to push changes to the page
-  const handleEditForm = (e) => {
+  // PATCH request; calls handleVocabCreate to push changes to the page
+  const handleAddForm = (e) => {
     e.preventDefault();
 
+    console.log("add clicked...");
     fetch(Constants.VOCAB_RECORDS_ENDPOINT, {
-      method: Constants.PATCH_METHOD,
-      body: JSON.stringify(editForm),
+      method: Constants.POST_METHOD,
+      body: JSON.stringify(addForm),
     })
       .then((res) => res.json())
       .then((updatedVocab) => {
-        handleVocabUpdate(updatedVocab);
+        handleVocabCreate(updatedVocab);
       })
       .catch((err) => {
         console.error(Constants.ERROR_STR, err);
@@ -30,22 +31,22 @@ const EditVocab = ({
   };
 
   // when PATCH request happens; auto-hides the form, pushes changes to display
-  const handleVocabUpdate = (updatedVocab) => {
-    setEditRecord(false);
-    onUpdateVocab(updatedVocab);
+  const handleVocabCreate = (updatedVocab) => {
+    setAddRecord(false);
+    onCreateVocab(updatedVocab);
   };
 
   const labels = {
     Dutch: dutch,
     English: english,
-    "Pronunciation URL": pronunciationlink,
+    PronunciationLink: pronunciationlink,
     Notes: notes,
-    Category: set_name,
+    Category: category,
   };
 
   return (
     <div className={styles.formStyles}>
-      <form onSubmit={handleEditForm}>
+      <form onSubmit={handleAddForm}>
         <div className="form-wrapper">
           <div className={styles.formInputWrapper}>
             {Object.entries(labels).map(([key, value], i) => (
@@ -56,7 +57,7 @@ const EditVocab = ({
                     type="text"
                     name={key.toLowerCase()}
                     value={value}
-                    onChange={handleEditChange}
+                    onChange={handleAddChange}
                   />
                 </div>
               </div>
@@ -77,4 +78,4 @@ const EditVocab = ({
   );
 };
 
-export default EditVocab;
+export default AddVocab;

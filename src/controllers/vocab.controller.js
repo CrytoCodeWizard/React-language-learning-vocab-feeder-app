@@ -87,7 +87,7 @@ const updateVocab = async (req, res, next) => {
   req.on("end", () => {
     const newVocab = JSON.parse(decodeURIComponent(body));
 
-    const query = vocabService.updateVocabRecordById(
+    const query = vocabService.buildUpdateVocabRecordByIdQuery(
       newVocab.id,
       Object.keys(newVocab)
     );
@@ -95,15 +95,48 @@ const updateVocab = async (req, res, next) => {
 
     pool.connect(async (err, client, release) => {
       if (err) {
+        logger.error(buildLoggingStr(QUERY_CONNECTION_ERROR_MSG, err.stack));
         return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack);
       }
       client.query(query, colValues, (err, result) => {
         release();
         if (err) {
+          logger.error(buildLoggingStr(QUERY_EXECUTION_ERROR_MSG, err.stack));
           return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
         }
         res.send(newVocab);
       });
+    });
+  });
+};
+
+const postVocab = async (req, res, next) => {
+  let body = "";
+  req.on("data", (chunk) => {
+    body += chunk.toString();
+  });
+
+  req.on("end", () => {
+    const newVocab = JSON.parse(decodeURIComponent(body));
+    newVocab.set_name = newVocab.category;
+    delete newVocab.category;
+
+    pool.connect(async (err, client, release) => {
+      if (err) {
+        logger.error(buildLoggingStr(QUERY_CONNECTION_ERROR_MSG, err.stack));
+        return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack);
+      }
+      client.query(
+        vocabService.buildInsertVocabRecordQuery(newVocab),
+        (err, result) => {
+          release();
+          if (err) {
+            logger.error(buildLoggingStr(QUERY_EXECUTION_ERROR_MSG, err.stack));
+            return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
+          }
+          res.send(newVocab);
+        }
+      );
     });
   });
 };
@@ -152,6 +185,7 @@ const getVocabForCategory = async (req, res, next) => {
 };
 
 const getVocab = async (req, res, next) => {
+  req.on("data", () => {});
   req.on("end", async () => {
     const queryStr =
       "SELECT id, english, dutch, pronunciationLink, notes, set_name FROM vocabulary ORDER BY dutch";
@@ -179,6 +213,7 @@ module.exports = {
   getLessonPeopleNames,
   getVocabForCategory,
   getVocab,
+  postVocab,
   updateVocab,
   postSlackMessage,
 };

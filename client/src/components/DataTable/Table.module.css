@@ -51,22 +51,46 @@
   outline: orange 5px auto;
 }
 
-.wrapper {
-  margin: 0 auto;
-  max-width: 1400px;
-}
-
-.searchWrapper {
-  margin: 12px auto;
+.formStyles {
+  background: rgb(234, 245, 253);
   text-align: center;
+  margin: 12px;
 }
 
-.searchWrapper input {
-  width: 480px;
-  padding: 12px 20px;
-  margin: 8px 0;
+.vocabHeader {
+  color: white;
+  font-size: 16px;
+}
+
+.formInputWrapper {
+  width: 1400px;
+  margin: 0 auto;
   display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
+}
+
+.formInput {
+  margin: 12px auto;
+  text-align: left;
+  display: inline-block;
+  width: 250px;
+}
+
+.formInput > div > input {
+  width: 220px;
+}
+
+.inputLabel {
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.searchInput > label,
+.searchInput > label > input {
+  display: block;
+  text-align: left;
+}
+
+.formBtns {
+  margin: 8px;
+  display: inline-block;
 }
