@@ -7,7 +7,6 @@ import EditVocab from "./../EditVocab/EditVocab";
 import DisplayVocab from "../DisplayVocab/DisplayVocab";
 
 const DataTable = ({ data, LIMIT, onUpdateVocab }) => {
-  console.log(data.length);
   const theme = useTheme({
     HeaderRow: `
         background-color: #eaf5fd;
