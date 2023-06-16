@@ -48,6 +48,7 @@ const ReviewVocabEntries = (props) => {
       LIMIT="10"
       onCreateVocab={onCreateVocab}
       onUpdateVocab={onUpdateVocab}
+      setRefetch={setRefetch}
     />
   );
 };

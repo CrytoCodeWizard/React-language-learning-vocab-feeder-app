@@ -3,7 +3,7 @@
 import React from "react";
 import styles from "./Modal.module.css";
 
-const Modal = ({ setDeleteRecord }) => {
+const Modal = ({ setDeleteRecord, handleDeleteRecord }) => {
   return (
     <>
       <div className={styles.darkBG} onClick={() => setDeleteRecord(false)} />
@@ -25,7 +25,10 @@ const Modal = ({ setDeleteRecord }) => {
             <div className={styles.actionsContainer}>
               <button
                 className={styles.deleteBtn}
-                onClick={() => setDeleteRecord(false)}
+                onClick={() => {
+                  setDeleteRecord(false);
+                  handleDeleteRecord();
+                }}
               >
                 Delete
               </button>

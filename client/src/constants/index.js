@@ -73,6 +73,7 @@ export const ERROR_STR = "Error: ";
 export const GET_METHOD = "GET";
 export const POST_METHOD = "POST";
 export const PATCH_METHOD = "PATCH";
+export const DELETE_METHOD = "DELETE";
 export const CONTENT_TYPE_JSON_UTF8 = "application/json; charset=UTF-8";
 export const LOADING_STR = "Loading...";
 export const ROOT_ENDPOINT = "/";

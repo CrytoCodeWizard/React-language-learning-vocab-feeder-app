@@ -27,6 +27,7 @@ const DisplayVocab = ({
   setEditRecord,
   setDeleteForm,
   setDeleteRecord,
+  handleDeleteRecord,
 }) => {
   const theme = useTheme({
     HeaderRow: `
@@ -93,7 +94,7 @@ const DisplayVocab = ({
     setEditForm(filtered[0]);
   };
 
-  // capture the vocab you wish to edit, set to state
+  // capture the vocab you wish to delete, set to state
   const captureDelete = (clickedVocab) => {
     let filtered = data.filter((vocab) => vocab.id === clickedVocab.id);
     setDeleteForm(filtered[0]);
@@ -177,7 +178,12 @@ const DisplayVocab = ({
 
         <TableFooter pagination={pagination} pageCount={pageCount} />
       </div>
-      {deleteRecord && <Modal setDeleteRecord={setDeleteRecord} />}
+      {deleteRecord && (
+        <Modal
+          setDeleteRecord={setDeleteRecord}
+          handleDeleteRecord={handleDeleteRecord}
+        />
+      )}
     </>
   );
 };
