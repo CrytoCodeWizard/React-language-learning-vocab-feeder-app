@@ -10,6 +10,7 @@ const DataTable = ({ data, LIMIT, onCreateVocab, onUpdateVocab }) => {
   // state for conditional render of edit form
   const [editRecord, setEditRecord] = useState(false);
   const [addRecord, setAddRecord] = useState(false);
+  const [deleteRecord, setDeleteRecord] = useState(false);
 
   // state for edit form inputs
   const [editForm, setEditForm] = useState({
@@ -23,6 +24,15 @@ const DataTable = ({ data, LIMIT, onCreateVocab, onUpdateVocab }) => {
 
   // state for edit form inputs
   const [addForm, setAddForm] = useState({
+    dutch: "",
+    english: "",
+    pronunciationlink: "",
+    notes: "",
+    category: "",
+  });
+
+  // state for edit form inputs
+  const [deleteForm, setDeleteForm] = useState({
     dutch: "",
     english: "",
     pronunciationlink: "",
@@ -79,14 +89,14 @@ const DataTable = ({ data, LIMIT, onCreateVocab, onUpdateVocab }) => {
       <DisplayVocab
         data={data}
         LIMIT={LIMIT}
-        addForm={addForm}
-        addRecord={addRecord}
         editForm={editForm}
         editRecord={editRecord}
-        setAddForm={setAddForm}
+        deleteRecord={deleteRecord}
         setAddRecord={setAddRecord}
         setEditForm={setEditForm}
         setEditRecord={setEditRecord}
+        setDeleteForm={setDeleteForm}
+        setDeleteRecord={setDeleteRecord}
       />
     );
   }
