@@ -4,12 +4,20 @@ import styles from "./Table.module.css";
 
 import EditVocab from "./../EditVocab/EditVocab";
 import AddVocab from "./../AddVocab/AddVocab";
-import DisplayVocab from "../DisplayVocab/DisplayVocab";
+import DisplayVocab from "./../DisplayVocab/DisplayVocab";
+import * as Constants from "./../../constants";
 
-const DataTable = ({ data, LIMIT, onCreateVocab, onUpdateVocab }) => {
+const DataTable = ({
+  data,
+  LIMIT,
+  onCreateVocab,
+  onUpdateVocab,
+  setRefetch,
+}) => {
   // state for conditional render of edit form
   const [editRecord, setEditRecord] = useState(false);
   const [addRecord, setAddRecord] = useState(false);
+  const [deleteRecord, setDeleteRecord] = useState(false);
 
   // state for edit form inputs
   const [editForm, setEditForm] = useState({
@@ -23,6 +31,15 @@ const DataTable = ({ data, LIMIT, onCreateVocab, onUpdateVocab }) => {
 
   // state for edit form inputs
   const [addForm, setAddForm] = useState({
+    dutch: "",
+    english: "",
+    pronunciationlink: "",
+    notes: "",
+    category: "",
+  });
+
+  // state for edit form inputs
+  const [deleteForm, setDeleteForm] = useState({
     dutch: "",
     english: "",
     pronunciationlink: "",
@@ -49,6 +66,21 @@ const DataTable = ({ data, LIMIT, onCreateVocab, onUpdateVocab }) => {
   const handleCancel = () => {
     setAddRecord(false);
     setEditRecord(false);
+  };
+
+  // POST request; calls handleVocabCreate to push changes to the page
+  const handleDeleteRecord = () => {
+    fetch(Constants.VOCAB_RECORDS_ENDPOINT, {
+      method: Constants.DELETE_METHOD,
+      body: JSON.stringify(deleteForm),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        setRefetch((prevState) => !prevState);
+      })
+      .catch((err) => {
+        console.error(Constants.ERROR_STR, err);
+      });
   };
 
   let datatableMarkup;
@@ -79,14 +111,15 @@ const DataTable = ({ data, LIMIT, onCreateVocab, onUpdateVocab }) => {
       <DisplayVocab
         data={data}
         LIMIT={LIMIT}
-        addForm={addForm}
-        addRecord={addRecord}
         editForm={editForm}
         editRecord={editRecord}
-        setAddForm={setAddForm}
+        deleteRecord={deleteRecord}
         setAddRecord={setAddRecord}
         setEditForm={setEditForm}
         setEditRecord={setEditRecord}
+        setDeleteForm={setDeleteForm}
+        setDeleteRecord={setDeleteRecord}
+        handleDeleteRecord={handleDeleteRecord}
       />
     );
   }

@@ -12,11 +12,10 @@ const AddVocab = ({
 }) => {
   let { dutch, english, pronunciationlink, notes, category } = addForm;
 
-  // PATCH request; calls handleVocabCreate to push changes to the page
+  // POST request; calls handleVocabCreate to push changes to the page
   const handleAddForm = (e) => {
     e.preventDefault();
 
-    console.log("add clicked...");
     fetch(Constants.VOCAB_RECORDS_ENDPOINT, {
       method: Constants.POST_METHOD,
       body: JSON.stringify(addForm),

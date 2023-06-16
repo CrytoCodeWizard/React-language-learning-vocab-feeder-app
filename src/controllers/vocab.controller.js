@@ -207,6 +207,37 @@ const getVocab = async (req, res, next) => {
   });
 };
 
+const deleteVocab = (req, res, next) => {
+  let body = "";
+  req.on("data", (chunk) => {
+    body += chunk.toString();
+  });
+
+  req.on("end", () => {
+    const vocabToDelete = JSON.parse(decodeURIComponent(body));
+    if (vocabToDelete.id) {
+      const query = vocabService.buildDeleteVocabRecordByIdQuery(
+        vocabToDelete.id
+      );
+
+      pool.connect(async (err, client, release) => {
+        if (err) {
+          logger.error(buildLoggingStr(QUERY_CONNECTION_ERROR_MSG, err.stack));
+          return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack);
+        }
+        client.query(query, async (err, result) => {
+          release();
+          if (err) {
+            logger.error(buildLoggingStr(QUERY_EXECUTION_ERROR_MSG, err.stack));
+            return console.error(QUERY_EXECUTION_ERROR_MSG, err.stack);
+          }
+          res.send(result.rows);
+        });
+      });
+    }
+  });
+};
+
 module.exports = {
   getSlackInfo,
   getReviewCategories,
@@ -216,4 +247,5 @@ module.exports = {
   postVocab,
   updateVocab,
   postSlackMessage,
+  deleteVocab,
 };

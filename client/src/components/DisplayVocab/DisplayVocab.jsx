@@ -14,18 +14,20 @@ import { usePagination } from "@table-library/react-table-library/pagination";
 import TableSearch from "./TableSearch/TableSearch";
 import TableFooter from "./TableFooter/TableFooter";
 import Vocab from "./../Vocab/Vocab";
+import Modal from "./../Modal/Modal";
 
 const DisplayVocab = ({
   data,
   LIMIT,
-  addForm,
-  addRecord,
   editForm,
   editRecord,
-  setAddForm,
+  deleteRecord,
   setAddRecord,
   setEditForm,
   setEditRecord,
+  setDeleteForm,
+  setDeleteRecord,
+  handleDeleteRecord,
 }) => {
   const theme = useTheme({
     HeaderRow: `
@@ -92,6 +94,12 @@ const DisplayVocab = ({
     setEditForm(filtered[0]);
   };
 
+  // capture the vocab you wish to delete, set to state
+  const captureDelete = (clickedVocab) => {
+    let filtered = data.filter((vocab) => vocab.id === clickedVocab.id);
+    setDeleteForm(filtered[0]);
+  };
+
   const currentData = {
     nodes: data.filter((vocabRecord) =>
       vocabRecord.dutch.toLowerCase().includes(search.toLowerCase())
@@ -112,11 +120,14 @@ const DisplayVocab = ({
 
   // needed logic for conditional rendering of the form - shows the vocab you want when you want them, and hides it when you don't
   const changeEditState = (vocab) => {
-    if (vocab.id === editForm.id) {
+    if (vocab.id === editForm.id || !editRecord) {
       setEditRecord((editRecord) => !editRecord); // hides the form
-    } else if (editRecord === false) {
-      setEditRecord((editRecord) => !editRecord); // shows the form
     }
+  };
+
+  // needed logic for conditional rendering of the form - shows the vocab you want when you want them, and hides it when you don't
+  const changeDeleteState = (vocab) => {
+    setDeleteRecord((deleteRecord) => !deleteRecord);
   };
 
   return (
@@ -156,6 +167,8 @@ const DisplayVocab = ({
                     vocab={vocab}
                     captureEdit={captureEdit}
                     changeEditState={changeEditState}
+                    captureDelete={captureDelete}
+                    changeDeleteState={changeDeleteState}
                   />
                 ))}
               </Body>
@@ -165,6 +178,12 @@ const DisplayVocab = ({
 
         <TableFooter pagination={pagination} pageCount={pageCount} />
       </div>
+      {deleteRecord && (
+        <Modal
+          setDeleteRecord={setDeleteRecord}
+          handleDeleteRecord={handleDeleteRecord}
+        />
+      )}
     </>
   );
 };

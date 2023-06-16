@@ -6,6 +6,8 @@ const Vocab = ({
   vocab: { id, dutch, english, pronunciationlink, notes, set_name },
   captureEdit,
   changeEditState,
+  captureDelete,
+  changeDeleteState,
 }) => {
   return (
     <Row key={id} item={vocab}>
@@ -22,6 +24,14 @@ const Vocab = ({
           }}
         >
           Edit
+        </button>
+        <button
+          onClick={() => {
+            captureDelete(vocab);
+            changeDeleteState(vocab);
+          }}
+        >
+          Delete
         </button>
       </Cell>
     </Row>

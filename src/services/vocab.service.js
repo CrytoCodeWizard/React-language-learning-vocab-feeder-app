@@ -77,10 +77,15 @@ const buildUpdateVocabRecordByIdQuery = (id, cols) => {
   return query.join(" ");
 };
 
+const buildDeleteVocabRecordByIdQuery = (id) => {
+  return format("DELETE FROM vocabulary WHERE id = %L", id);
+};
+
 module.exports = {
   getSlackInfo,
   getConnection,
   getReviewCategories,
   buildUpdateVocabRecordByIdQuery,
   buildInsertVocabRecordQuery,
+  buildDeleteVocabRecordByIdQuery,
 };
