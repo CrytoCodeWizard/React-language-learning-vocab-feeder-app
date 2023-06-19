@@ -52,7 +52,7 @@ const getLessonPeopleNames = async (req, res, next) => {
       return console.error(QUERY_CONNECTION_ERROR_MSG, err.stack);
     }
     client.query(
-      "SELECT person, TO_CHAR(lesson_date, 'YYYY-MM-DD') as lesson_date, notes, lesson_title FROM lesson",
+      "SELECT person, TO_CHAR(lesson_date, 'YYYY-MM-DD') as lesson_date, notes, lesson_title FROM lesson ORDER BY lesson_date DESC",
       async (err, result) => {
         release();
         if (err) {
