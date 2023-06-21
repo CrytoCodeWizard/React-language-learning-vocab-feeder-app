@@ -40,7 +40,7 @@ const getVocabularyRecords = async (recordCount) => {
     }
 
     client.query(
-      "SELECT id, dutch, english, pronunciationLink FROM vocabulary WHERE seen != TRUE AND mastered != TRUE ORDER BY random() LIMIT $1",
+      "SELECT id, dutch, english, pronunciationLink FROM vocabulary WHERE mastered != TRUE ORDER BY random() LIMIT $1",
       [recordCount],
       (err, result) => {
         release();

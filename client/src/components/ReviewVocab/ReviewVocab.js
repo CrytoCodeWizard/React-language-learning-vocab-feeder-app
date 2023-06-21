@@ -43,11 +43,16 @@ const ReviewVocab = (props) => {
 
   const GetRecordsForCategory = useCallback(
     (e) => {
+      let category = e;
+      if (e.target) {
+        category = e.target.innerText;
+      }
+
       setIsLoaded(false);
       fetch(Constants.GET_VOCAB_FOR_CATEGORY_ENDPOINT, {
         method: Constants.POST_METHOD,
         body: JSON.stringify({
-          category: e.target.innerText,
+          category: category,
         }),
         headers: {
           "Content-type": Constants.CONTENT_TYPE_JSON_UTF8,
@@ -163,7 +168,11 @@ const ReviewVocab = (props) => {
   }, []);
 
   if (isLoaded) {
-    if (searchParams.get(Constants.SETNAME_QUERY_PARAM) && records.length > 0) {
+    if (searchParams.get(Constants.SETNAME_QUERY_PARAM)) {
+      if (!records.length) {
+        GetRecordsForCategory(searchParams.get(Constants.SETNAME_QUERY_PARAM));
+      }
+
       if (!searchParams.get(Constants.REVIEWTYPE_QUERY_PARAM)) {
         return (
           <ReviewType
