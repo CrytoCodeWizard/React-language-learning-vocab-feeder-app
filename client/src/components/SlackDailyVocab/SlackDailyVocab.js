@@ -3,50 +3,53 @@ import "./../../App.css";
 import "./../../Snackbar.css";
 import "./SlackDailyVocab.css";
 
-import * as Constants from './../../constants';
+import * as Constants from "./../../constants";
 
 const SlackDailyVocab = (props) => {
   const [recordCount, setRecordCount] = useState(0);
-  const [data, setData] = useState('');
-  
+  const [data, setData] = useState("");
+
   useEffect(() => {
     fetch(Constants.GET_SLACK_INFO_ENDPOINT)
       .then((res) => res.json())
       .then((resData) => {
         setData(resData);
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.error(Constants.ERROR_STR, err);
       });
-  },[]);
+  }, []);
 
-  const HandleRecordCountChange = ((e) => {
+  const HandleRecordCountChange = (e) => {
     setRecordCount(e.target.value);
-  });
+  };
 
-  const HandleSubmit = ((e) => {
+  const HandleSubmit = (e) => {
     e.preventDefault();
     SendSlack(recordCount);
-  });
+  };
 
-  const ShowToast = (() => {
+  const ShowToast = () => {
     let x = document.getElementById("snackbar");
     x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
-  });
+    setTimeout(function () {
+      x.className = x.className.replace("show", "");
+    }, 5000);
+  };
 
-  const SendSlack = ((recordCount) => {
+  const SendSlack = (recordCount) => {
     fetch(Constants.SEND_SLACK_MSG_ENDPOINT, {
       method: Constants.POST_METHOD,
       body: JSON.stringify({
-        recordCount: recordCount
+        recordCount: recordCount,
       }),
       headers: {
-        'Content-type': Constants.CONTENT_TYPE_JSON_UTF8,
+        "Content-type": Constants.CONTENT_TYPE_JSON_UTF8,
       },
     }).then((res) => {
       ShowToast();
     });
-  });
+  };
 
   return (
     <div className="SlackApp">
@@ -54,16 +57,27 @@ const SlackDailyVocab = (props) => {
       <form onSubmit={HandleSubmit} className="slack-form">
         <div className="slack-form-inputs">
           <label>
-            <input type="number" min={Constants.SLACK_RECORD_MIN} max={Constants.SLACK_RECORD_MAX} placeholder={Constants.SLACK_INPUT_PLACEHOLDER} name="recordsToSend" onChange={HandleRecordCountChange} required/>
+            <input
+              type="number"
+              min={Constants.SLACK_RECORD_MIN}
+              max={Constants.SLACK_RECORD_MAX}
+              placeholder={Constants.SLACK_INPUT_PLACEHOLDER}
+              name="recordsToSend"
+              onChange={HandleRecordCountChange}
+              required
+            />
           </label>
         </div>
         <div className="slack-form-controls">
-          <input type="submit" value={!data ? Constants.LOADING_STR : data.sendDailySlackBtnLabel} />
+          <input
+            type="submit"
+            value={!data ? Constants.LOADING_STR : data.sendDailySlackBtnLabel}
+          />
         </div>
       </form>
       <div id="snackbar">{Constants.SLACK_SENT_CONFIRMATION}</div>
     </div>
   );
-}
+};
 
 export default SlackDailyVocab;

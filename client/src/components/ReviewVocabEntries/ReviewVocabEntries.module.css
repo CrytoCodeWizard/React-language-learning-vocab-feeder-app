@@ -1,0 +1,11 @@
+/* @/src/ReviewVocabEntries.module.css */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+}
+
+.wrapper {
+  max-width: 1400px;
+}

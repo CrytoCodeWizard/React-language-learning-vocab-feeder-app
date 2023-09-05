@@ -1,12 +1,25 @@
 const buildKeyString = (resultRows) => {
-	let keyString = '';
-	for(let row in resultRows) {
-		keyString += resultRows[row].id;
-	}
+  let keyString = "";
+  for (const row in resultRows) {
+    if (resultRows[row].id) {
+      keyString += resultRows[row].id;
+    }
+  }
 
-	return keyString;
-}
+  return keyString;
+};
+
+const buildLoggingStr = (message, opts) => {
+  if (opts) {
+    if (opts.payload) {
+      return `${message} : ${opts.payload}`;
+    }
+  }
+
+  return `${message}`;
+};
 
 module.exports = {
-    buildKeyString,
-}
+  buildKeyString,
+  buildLoggingStr,
+};

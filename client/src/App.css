@@ -25,7 +25,8 @@
   font-size: calc(12px + 2vmin);
 }
 
-nav > ul > li, nav {
+nav > ul > li,
+nav {
   display: inline-block;
   margin: 0px 8px;
   font-size: calc(6px + 2vmin);
@@ -36,11 +37,13 @@ nav > ul > li, nav {
   text-decoration: none;
 }
 
-.navAnchor:hover, .category-list-item:hover {
+.navAnchor:hover,
+.category-list-item:hover {
   color: #fdc029;
 }
 
-h1, h2 {
+h1,
+h2 {
   text-align: center;
   color: white;
 }
@@ -69,7 +72,8 @@ h1, h2 {
   border: 2px solid #bcb6ae;
 }
 
-.category-list-item, .review-type-item {
+.category-list-item,
+.review-type-item {
   color: #df861d;
   font-size: 28px;
   text-decoration: none;
