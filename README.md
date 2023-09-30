@@ -1,6 +1,6 @@
 # vocab-feeder
 
-## A React app that I can use as my one-stop note hub for studying language (in my case, Dutch)
+## A React app that I can use as my one-stop note hub for studying language.
 
 When it comes to learning and studying languages, I tend to hate most of the tools that I find. Whether it's their UX, their structure, the modularized purpose of that particular app, their subscription model... whatever it may be, there's almost always something that annoys me in some form.
 
